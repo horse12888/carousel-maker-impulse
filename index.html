@@ -69,7 +69,7 @@
 
         .slide-cover {
             overflow: visible !important;
-            padding: 14px 0 0 0;
+            padding: 10px 0 0 0;
             align-items: center;
         }
 
@@ -237,16 +237,16 @@
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">102%</span>
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">106%</span>
                         </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="102" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageScale" min="60" max="150" value="106" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">2%</span>
+                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">-2%</span>
                         </label>
-                        <input type="range" id="imageY" min="-10" max="100" value="2" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageY" min="-10" max="100" value="-2" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
                 </div>
             </div>
@@ -492,11 +492,11 @@
             htmlContent += `
                 <div class="slide slide-cover brand-bg text-center" style="padding-top: 10px;">
 
-                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.65rem; line-height: 0.8; margin-bottom: 2px; z-index: 0; letter-spacing: -5px; transform: scaleX(1.03);">
+                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 6.15rem; line-height: 0.74; margin-bottom: -6px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.08);">
                         ${escapeHtml(data.cover.magazineTitle)}
                     </h1>
 
-                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px); transform: translateY(-2px);">
+                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px); transform: translateY(-6px);">
 
                         <div class="absolute inset-0 rounded-[20px] overflow-hidden shadow-2xl z-10">
                             <div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
@@ -504,27 +504,29 @@
                         </div>
 
                         <img id="heroImage" src="${fgImage}"
-                             class="absolute left-1/2 transform -translate-x-1/2 w-[86%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
+                             class="absolute left-1/2 transform -translate-x-1/2 w-[88%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
                              style="height: ${scale}%; bottom: ${yPos}%;">
 
 
-                        <div class="absolute left-0 bottom-0 w-full h-[70%] z-30 pointer-events-none"
+                        <div class="absolute left-0 bottom-0 w-full h-[82%] z-30 pointer-events-none"
                              style="background: linear-gradient(
                                 to bottom,
                                 rgba(10,10,10,0) 0%,
-                                rgba(10,10,10,0.12) 14%,
-                                rgba(10,10,10,0.42) 28%,
-                                rgba(10,10,10,0.76) 45%,
-                                rgba(10,10,10,0.94) 63%,
+                                rgba(10,10,10,0.08) 10%,
+                                rgba(10,10,10,0.30) 22%,
+                                rgba(10,10,10,0.62) 36%,
+                                rgba(10,10,10,0.88) 50%,
+                                rgba(10,10,10,0.98) 66%,
                                 rgba(10,10,10,1) 100%
                              );">
                         </div>
 
-                        <div class="absolute left-0 bottom-0 w-full h-[46%] z-31 pointer-events-none"
+                        <div class="absolute left-0 bottom-0 w-full h-[58%] z-31 pointer-events-none"
                              style="background: linear-gradient(
                                 to bottom,
                                 rgba(10,10,10,0) 0%,
-                                rgba(10,10,10,0.88) 50%,
+                                rgba(10,10,10,0.74) 38%,
+                                rgba(10,10,10,0.96) 58%,
                                 rgba(10,10,10,1) 100%
                              );">
                         </div>
@@ -551,7 +553,7 @@
                             </span>
                         </div>
 
-                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center">
+                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center" style="transform: translateY(-10px);">
                             <h2 class="title-text text-white mb-2" style="font-size: 1.96rem; line-height: 1.01;">
                                 ${titleFormatted}
                             </h2>
