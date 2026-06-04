@@ -86,8 +86,21 @@
 
         .slide-cover {
             overflow: hidden !important;
-            padding: 10px 0 0 0;
+            padding: 0;
             align-items: center;
+        }
+
+        .cover-card {
+            width: 340px;
+            flex: 1;
+            margin: 0 auto 20px auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border-radius: 20px;
+            overflow: hidden;
+            transform: translateY(-18px);
         }
 
         .title-text {
@@ -573,15 +586,15 @@
             const titleFormatted = formatCoverTitle(data.cover.title);
 
             htmlContent += `
-                <div class="slide slide-cover brand-bg text-center" style="padding-top: 10px; overflow: hidden !important;">
+                <div class="slide slide-cover brand-bg text-center">
 
-                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.78rem; line-height: 0.76; margin-bottom: -2px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.03); white-space: nowrap;">
+                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.78rem; line-height: 0.82; margin-bottom: -2px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.03); white-space: nowrap;">
                         ${escapeHtml(data.cover.magazineTitle)}
                     </h1>
 
-                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px); transform: translateY(-6px);">
+                    <div class="cover-card">
 
-                        <div class="absolute inset-0 rounded-[20px] overflow-hidden shadow-2xl z-10">
+                        <div class="absolute inset-0 z-10">
                             <div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
                             <div class="absolute inset-0 bg-[#0a0a0a]/22"></div>
                         </div>
