@@ -108,14 +108,14 @@
 
         .cover-stage {
             width: 340px;
-            height: 390px;
+            height: 395px;
             margin: 0 auto 0 auto;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             overflow: visible;
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             isolation: isolate;
         }
 
@@ -123,14 +123,14 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: 0;
-            bottom: 0;
+            top: 22px;
+            bottom: -32px;
             border-radius: 22px 22px 0 0;
             overflow: hidden;
             z-index: 10;
             background:
-                radial-gradient(circle at 30% 14%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.16) 30%, rgba(255,255,255,0) 60%),
-                linear-gradient(180deg, #c8dfdc 0%, #a9ceca 32%, #4f8790 66%, #0a0f10 100%);
+                radial-gradient(circle at 30% 10%, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.18) 30%, rgba(255,255,255,0) 60%),
+                linear-gradient(180deg, #cfe4df 0%, #a9ceca 28%, #4f8790 62%, #0a0f10 100%);
         }
 
         .cover-panel::after {
@@ -149,7 +149,7 @@
         .cover-gradient {
             position: absolute;
             left: 0;
-            bottom: 0;
+            bottom: -32px;
             width: 100%;
             pointer-events: none;
         }
@@ -327,9 +327,9 @@
 
                 <div class="mb-3">
                     <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">72%</span>
+                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">76%</span>
                     </label>
-                    <input type="range" id="gradientStart" min="35" max="95" value="72" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                    <input type="range" id="gradientStart" min="35" max="95" value="76" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
 
                 <div class="mb-3">
@@ -341,9 +341,9 @@
 
                 <div>
                     <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">52%</span>
+                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">58%</span>
                     </label>
-                    <input type="range" id="blackBase" min="20" max="85" value="52" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                    <input type="range" id="blackBase" min="20" max="85" value="58" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
             </div>
 
@@ -653,9 +653,9 @@
                                 transform-origin: bottom center;
                              ">
 
-                        <div id="mainGradient" class="cover-gradient h-[72%]" style="z-index: 30;"></div>
+                        <div id="mainGradient" class="cover-gradient h-[76%]" style="z-index: 30;"></div>
 
-                        <div id="baseGradient" class="cover-gradient h-[52%]" style="z-index: 31;"></div>
+                        <div id="baseGradient" class="cover-gradient h-[58%]" style="z-index: 31;"></div>
 
                         <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
                             <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
