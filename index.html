@@ -4,47 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Davide Di Leo - Carousel Generator 3D</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
-    
-    <!-- Librerie per l'esportazione PNG e ZIP -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
         @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
-        
-        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #0a0a0a; color: white; }
 
-        .carousel-track { display: flex; gap: 40px; overflow-x: auto; padding: 40px; scroll-snap-type: x mandatory; align-items: center; height: 100%; }
-        .carousel-track::-webkit-scrollbar { height: 16px; }
-        .carousel-track::-webkit-scrollbar-track { background: #1a1a1a; margin: 0 40px; border-radius: 8px;}
-        .carousel-track::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; border: 4px solid #1a1a1a; }
-        .carousel-track::-webkit-scrollbar-thumb:hover { background: #555; }
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 40px;
+            overflow-x: auto;
+            padding: 40px;
+            scroll-snap-type: x mandatory;
+            align-items: center;
+            height: 100%;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            height: 16px;
+        }
+
+        .carousel-track::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            margin: 0 40px;
+            border-radius: 8px;
+        }
+
+        .carousel-track::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 8px;
+            border: 4px solid #1a1a1a;
+        }
+
+        .carousel-track::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
 
         .slide {
-            width: 380px; height: 475px; flex-shrink: 0; border-radius: 12px;
-            position: relative; padding: 45px 35px; scroll-snap-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex;
-            flex-direction: column; justify-content: flex-start; overflow: hidden;
+            width: 380px;
+            height: 475px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            position: relative;
+            padding: 42px 34px;
+            scroll-snap-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
         }
-        
-        /* La slide 1, copertina, non deve avere overflow hidden per permettere alla testa di uscire */
-        .slide-cover { overflow: visible !important; padding: 25px 0 0 0; align-items: center; }
 
-        .title-text { font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; text-transform: uppercase; line-height: 1; font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
-        .sub-text { font-family: 'Hanken Grotesk', sans-serif; font-weight: 800; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .step-number { font-family: 'Caveat', cursive; font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 5px; margin-top: 15px; }
-        .body-title { font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; font-size: 1.9rem; margin-bottom: 20px; line-height: 1.05; letter-spacing: -0.5px; }
-        .body-text { font-family: 'Hanken Grotesk', sans-serif; font-weight: 500; font-size: 1rem; line-height: 1.4; padding: 0 10px; }
-        
-        .hand-arrow { font-family: 'Open Sauce One', sans-serif; font-weight: 700; position: absolute; font-size: 1.25rem; transform: rotate(-15deg); text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .slide-cover {
+            overflow: visible !important;
+            padding: 20px 0 0 0;
+            align-items: center;
+        }
 
-        .logo-footer { position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 10; display: flex; flex-direction: column; gap: 2px; }
-        .logo-name { font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -0.5px; line-height: 1; color: #000000; }
-        .logo-handle { font-family: 'Hanken Grotesk', sans-serif; font-weight: 500; font-size: 0.8rem; line-height: 1; color: #000000; }
+        .title-text {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .sub-text {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .body-content {
+            width: 100%;
+            min-height: 355px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 45px;
+        }
+
+        .step-number {
+            font-family: 'Caveat', cursive;
+            font-size: 2.45rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .body-title {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: 1.68rem;
+            margin-bottom: 22px;
+            line-height: 1.08;
+            letter-spacing: -0.5px;
+            max-width: 310px;
+        }
+
+        .body-text {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            padding: 0 4px;
+            max-width: 305px;
+        }
+
+        .logo-footer {
+            position: absolute;
+            bottom: 28px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .logo-name {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+            line-height: 1;
+            color: #000000;
+        }
+
+        .logo-handle {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            line-height: 1;
+            color: #000000;
+        }
+
+        .cta-content {
+            width: 100%;
+            min-height: 355px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 45px;
+        }
+
+        .cta-top {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: #0a0a0a;
+            max-width: 310px;
+            margin-bottom: 28px;
+        }
+
+        .cta-main {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: 2.32rem;
+            text-transform: uppercase;
+            line-height: 1.03;
+            letter-spacing: -1px;
+            color: #0a0a0a;
+            max-width: 330px;
+            margin-bottom: 26px;
+        }
+
+        .cta-bottom {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
+            line-height: 1.42;
+            color: #ffffff;
+            max-width: 310px;
+            white-space: pre-line;
+        }
     </style>
 </head>
 
@@ -52,7 +205,7 @@
 
     <div class="w-[360px] flex-shrink-0 bg-gray-900 p-6 overflow-y-auto border-r border-gray-800 z-20 flex flex-col">
         <h2 class="text-xl font-bold mb-6 text-white">⚙️ Pannello Generatore 3D</h2>
-        
+
         <div class="space-y-4 flex-1">
             <div>
                 <label class="block text-sm font-medium mb-1 text-gray-300">Colore Brand</label>
@@ -61,11 +214,11 @@
                     <span id="hexValue" class="text-sm font-mono text-gray-400">#276f8f</span>
                 </div>
             </div>
-            
+
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
                 <label class="block text-sm font-medium mb-2 text-gray-300">1. Stile Sfondo Copertina</label>
                 <select id="bgPreset" onchange="updateBgPreset()" class="w-full bg-gray-900 text-white border border-gray-600 rounded p-2 text-xs mb-2 cursor-pointer focus:outline-none focus:border-blue-500">
-                    <option value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 1: Ufficio Sfocato (Classico)</option>
+                    <option value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 1: Ufficio Sfocato</option>
                     <option value="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 2: Muro di Mattoni</option>
                     <option value="https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 3: Cemento Industrial</option>
                 </select>
@@ -73,23 +226,33 @@
             </div>
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <label class="block text-sm font-medium mb-1 text-gray-300">2. Soggetto in 3D (PNG Scontornato)</label>
-                <p class="text-[10px] text-gray-400 mb-2">Carica la tua foto a cui hai rimosso lo sfondo, per esempio tramite remove.bg o iPhone.</p>
+                <label class="block text-sm font-medium mb-1 text-gray-300">2. Soggetto in 3D</label>
+                <p class="text-[10px] text-gray-400 mb-2">Carica una foto scontornata, PNG o JPG.</p>
+
                 <div class="relative">
                     <input type="file" id="localImageInput" accept="image/png, image/jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
                         Carica PNG Scontornato
                     </button>
                 </div>
-                
+
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
-                        <label class="text-xs font-bold text-gray-300 flex justify-between">Dimensione Soggetto <span id="scaleVal" class="text-blue-400">105%</span></label>
+                        <label class="text-xs font-bold text-gray-300 flex justify-between">
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">105%</span>
+                        </label>
                         <input type="range" id="imageScale" min="60" max="150" value="105" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
+
                     <div>
-                        <label class="text-xs font-bold text-gray-300 flex justify-between">Sposta in Alto/Basso <span id="yVal" class="text-blue-400">12%</span></label>
+                        <label class="text-xs font-bold text-gray-300 flex justify-between">
+                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">12%</span>
+                        </label>
                         <input type="range" id="imageY" min="-10" max="100" value="12" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
                 </div>
@@ -105,10 +268,10 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1 text-gray-300">Script Contenuto (JSON)</label>
+                <label class="block text-sm font-medium mb-1 text-gray-300">Script Contenuto JSON</label>
                 <textarea id="scriptInput" rows="6" class="w-full bg-gray-900 text-green-400 border border-gray-700 rounded p-2 text-[11px] font-mono"></textarea>
             </div>
-            
+
             <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">
                 Genera Anteprima 3D
             </button>
@@ -127,81 +290,158 @@
         </div>
 
         <div class="flex-1 overflow-hidden w-full relative">
-            <div class="carousel-track" id="carouselTrack">
-                <!-- Generazione dinamica JS -->
-            </div>
+            <div class="carousel-track" id="carouselTrack"></div>
         </div>
     </div>
 
     <script>
         const defaultScript = {
-          "cover": {
-            "magazineTitle": "IMPULSE",
-            "leftAnnotation": "Will\nNitze",
-            "rightAnnotation": "Founder\nIQBAR",
-            "title": "COME HA CREATO UN BRAND DA\n[BRAND]$125 MILIONI[/BRAND]\nCON SOLO 14 PERSONE",
-            "subtitle": "6 PASSI PER L'EFFICIENZA ESTREMA"
-          },
-          "slides": [
-            {
-              "title": "Usa il modello Hub & Spoke.",
-              "text": "Nitze mantiene il core team piccolo per la direzione e la strategia. L'esecuzione è delegata ad agenzie esterne esperte. Questo previene i rallentamenti e le riunioni inutili tipiche dei grandi team interni."
+            "cover": {
+                "magazineTitle": "IMPULSE",
+                "leftAnnotation": "Michael\nBaum",
+                "rightAnnotation": "Co-founder\nSplunk",
+                "title": "DA STEVE JOBS A\n[BRAND]$28 MILIARDI[/BRAND]\nCON SPLUNK",
+                "subtitle": "IL PLAYBOOK DI MICHAEL BAUM"
             },
-            {
-              "title": "Filtra per Energia vs Entrate.",
-              "text": "Ogni task è valutato in base alle entrate generate rispetto all'energia richiesta. Dà priorità a distributori enormi come Costco rispetto ai piccoli negozi. Questo assicura che il team rimanga focalizzato sulle grandi vittorie."
-            },
-            {
-              "title": "Assumi per Skin in the Game.",
-              "text": "Evita i dipendenti solamente competenti in favore di quelli che hanno una ragione psicologica o finanziaria per vedere vincere l'azienda, assicurandoti che lavorino 10 volte più duramente degli altri."
-            },
-            {
-              "title": "La mentalità da lotta all'ultimo sangue.",
-              "text": "Nitze ha reinventato l'identità di IQBAR più di dieci volte. Crede che un brand non sia mai al sicuro. Questa volontà di fare pivot veloci permette al suo piccolo team di battere le multinazionali."
+            "slides": [
+                {
+                    "title": "1. Un evento può cambiare una traiettoria.",
+                    "text": "Michael Baum studiava a Drexel quando Steve Jobs arrivò nel campus per la partnership Apple. Quell'esposizione al personal computing lo spinse verso il software. Vide prima degli altri dove stava andando il mercato."
+                },
+                {
+                    "title": "2. Il primo pattern: problemi complessi.",
+                    "text": "Baum non partì da prodotti carini. Partì da problemi difficili: dati, finanza, sistemi, caos operativo. Una delle sue prime startup lavorava su modelli per analizzare trend di mercato e fu acquisita da Reuters."
+                },
+                {
+                    "title": "3. Splunk nasce da una frustrazione enorme.",
+                    "text": "Le aziende generavano montagne di log, errori, alert e segnali tecnici. Nessuno riusciva a cercarli e usarli velocemente. Splunk trasformò quel caos in visibilità operativa."
+                },
+                {
+                    "title": "4. La vera scala arriva dove c'è budget.",
+                    "text": "Splunk diventò sempre più rilevante quando dati, cybersecurity e osservabilità diventarono priorità da boardroom. Quando il problema costa milioni in downtime, rischio e compliance, il software diventa infrastruttura."
+                },
+                {
+                    "title": "5. L'asset continua anche quando esci.",
+                    "text": "Baum lasciò il ruolo operativo anni prima dell'acquisizione Cisco. Ma l'azienda continuò a crescere perché aveva costruito qualcosa con mercato, tecnologia e posizione strategica. Questa è la differenza tra vendere lavoro e costruire equity."
+                },
+                {
+                    "title": "6. La lezione per ogni founder.",
+                    "text": "Cerca il punto in cui un cambiamento tecnologico incontra un problema costoso e ricorrente. Poi costruisci un sistema che diventa sempre più difficile da sostituire."
+                }
+            ],
+            "cta": {
+                "topText": "Vuoi capire se il tuo business sta costruendo valore reale?",
+                "mainText": "Fai il\nBUSINESS ASSESSMENT",
+                "bottomText": "Diagnosi gratuita in 4 minuti per scoprire dove stai perdendo crescita, margine e enterprise value."
             }
-          ],
-          "cta": {
-            "topText": "Vuoi altri casi studio?",
-            "mainText": "Commenta\nBUSINESS",
-            "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM."
-          }
         };
 
         const ctaPresets = {
-            "preset1": { "topText": "Diagnosi in 4 minuti", "mainText": "SCOPRI IL\nVINCOLO", "bottomText": "che sta limitando crescita, margini o scalabilità.\n\nLink in bio." },
-            "preset2": { "topText": "Pronto per il prossimo salto?", "mainText": "IMPULSE\nASSESSMENT", "bottomText": "In 4 minuti ottieni una diagnosi gratuita su margini, acquisizione, operations, asset e readiness.\n\nFai il test dal link in bio." },
-            "preset3": { "topText": "Vuoi altri casi studio?", "mainText": "Commenta\nBUSINESS", "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM." }
+            "preset1": {
+                "topText": "Diagnosi in 4 minuti",
+                "mainText": "SCOPRI IL\nVINCOLO",
+                "bottomText": "che sta limitando crescita, margini o scalabilità.\n\nLink in bio."
+            },
+            "preset2": {
+                "topText": "Pronto per il prossimo salto?",
+                "mainText": "IMPULSE\nASSESSMENT",
+                "bottomText": "In 4 minuti ottieni una diagnosi gratuita su margini, acquisizione, operations, asset e readiness.\n\nFai il test dal link in bio."
+            },
+            "preset3": {
+                "topText": "Vuoi altri casi studio?",
+                "mainText": "Commenta\nBUSINESS",
+                "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM."
+            }
         };
 
-        let uploadedImageBase64 = "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png"; 
-
-        document.getElementById('localImageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedImageBase64 = event.target.result;
-                    generateFromScript(); 
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        let uploadedImageBase64 = "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png";
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('scriptInput').value = JSON.stringify(defaultScript, null, 2);
             generateFromScript();
         });
 
+        document.getElementById('localImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    uploadedImageBase64 = event.target.result;
+                    generateFromScript();
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('bgColor').addEventListener('input', applyColors);
+
+        function escapeHtml(value) {
+            if (value === undefined || value === null) return '';
+
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatMultiline(value) {
+            return escapeHtml(value).replace(/\n/g, '<br>');
+        }
+
+        function formatCoverTitle(value) {
+            if (!value) return '';
+
+            const escaped = escapeHtml(value);
+
+            return escaped
+                .replace(/\n/g, '<br>')
+                .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, '<span class="brand-text">$1</span>');
+        }
+
+        function cleanSlideTitle(title) {
+            if (!title) return '';
+
+            return String(title)
+                .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
+                .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
+                .trim();
+        }
+
+        function normalizeSmartQuotes(value) {
+            return value
+                .replace(/[“”]/g, '"')
+                .replace(/[‘’]/g, "'");
+        }
+
+        function parseScriptInput() {
+            const rawValue = document.getElementById('scriptInput').value;
+            const normalizedValue = normalizeSmartQuotes(rawValue);
+
+            try {
+                return JSON.parse(normalizedValue);
+            } catch (error) {
+                return null;
+            }
+        }
+
         function applyCtaPreset() {
             const selectedPreset = document.getElementById('ctaPreset').value;
-            try {
-                let data = JSON.parse(document.getElementById('scriptInput').value);
-                data.cta = ctaPresets[selectedPreset];
-                document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
-                generateFromScript();
-            } catch (error) { 
-                alert("Errore nel JSON. Controlla il contenuto dello script.");
+            const data = parseScriptInput();
+
+            if (!data) {
+                alert("Errore nel JSON. Controlla virgole, virgolette e parentesi.");
+                return;
             }
+
+            data.cta = ctaPresets[selectedPreset];
+
+            document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
+            generateFromScript();
         }
 
         function updateBgPreset() {
@@ -213,36 +453,35 @@
         function updateImageLive() {
             const scale = document.getElementById('imageScale').value;
             const yPos = document.getElementById('imageY').value;
-            
+
             document.getElementById('scaleVal').innerText = scale + '%';
             document.getElementById('yVal').innerText = yPos + '%';
-            
+
             const heroImg = document.getElementById('heroImage');
+
             if (heroImg) {
                 heroImg.style.height = scale + '%';
                 heroImg.style.bottom = yPos + '%';
             }
         }
 
-        function cleanSlideTitle(title) {
-            if (!title) return '';
-            
-            return title
-                .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
-                .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
-                .trim();
-        }
-
         function generateFromScript() {
             const track = document.getElementById('carouselTrack');
-            let data;
+            const data = parseScriptInput();
 
-            try {
-                data = JSON.parse(document.getElementById('scriptInput').value);
-            } catch (error) {
+            if (!data) {
                 track.innerHTML = `
-                    <div class="text-red-400 p-8">
+                    <div class="text-red-400 p-8 text-sm">
                         Errore nel JSON. Controlla virgole, virgolette e parentesi.
+                    </div>
+                `;
+                return;
+            }
+
+            if (!data.cover || !Array.isArray(data.slides) || !data.cta) {
+                track.innerHTML = `
+                    <div class="text-red-400 p-8 text-sm">
+                        Struttura JSON non valida. Servono cover, slides e cta.
                     </div>
                 `;
                 return;
@@ -250,93 +489,105 @@
 
             const bgImage = document.getElementById('bgImage').value;
             const fgImage = uploadedImageBase64;
-            
             const scale = document.getElementById('imageScale').value;
             const yPos = document.getElementById('imageY').value;
-            
+
             let htmlContent = '';
 
-            let titleFormatted = data.cover.title
-                .replace(/\n/g, '<br>')
-                .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, `<span class="brand-text">$1</span>`);
+            const titleFormatted = formatCoverTitle(data.cover.title);
 
             htmlContent += `
-            <div class="slide slide-cover brand-bg text-center" style="padding-top: 20px;">
-                <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.2rem; line-height: 0.8; margin-bottom: 22px; z-index: 0; letter-spacing: -3px;">
-                    ${data.cover.magazineTitle}
-                </h1>
-                
-                <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px);">
-                    
-                    <div class="absolute inset-0 rounded-[20px] overflow-hidden shadow-2xl z-10">
-                        <div class="absolute inset-0" style="background-image: url('${bgImage}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
-                        <div class="absolute inset-0 bg-[#0a0a0a]/30"></div>
-                    </div>
+                <div class="slide slide-cover brand-bg text-center" style="padding-top: 20px;">
+                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 4.55rem; line-height: 0.85; margin-bottom: 18px; z-index: 0; letter-spacing: -3px;">
+                        ${escapeHtml(data.cover.magazineTitle)}
+                    </h1>
 
-                    <img id="heroImage" src="${fgImage}" 
-                         class="absolute left-1/2 transform -translate-x-1/2 w-[85%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
-                         style="height: ${scale}%; bottom: ${yPos}%;">
+                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px);">
+
+                        <div class="absolute inset-0 rounded-[20px] overflow-hidden shadow-2xl z-10">
+                            <div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
+                            <div class="absolute inset-0 bg-[#0a0a0a]/30"></div>
+                        </div>
+
+                        <img id="heroImage" src="${fgImage}"
+                             class="absolute left-1/2 transform -translate-x-1/2 w-[85%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
+                             style="height: ${scale}%; bottom: ${yPos}%;">
 
 
-                    <div class="absolute bottom-0 left-0 w-full h-[75%] bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent z-30 pointer-events-none"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-[78%] bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent z-30 pointer-events-none"></div>
 
-                    <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
-                        <span class="text-[#0a0a0a] font-bold text-[1.1rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">${data.cover.leftAnnotation.replace(/\n/g, '<br>')}</span>
-                        <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mt-2 ml-4 transform rotate-12">
-                            <path d="M 5 5 Q 15 20 35 30" />
-                            <path d="M 22 32 L 35 30 L 30 18" />
-                        </svg>
-                    </div>
-                    
-                    <div class="absolute top-16 right-3 z-40 flex flex-col items-center">
-                        <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mb-2 mr-4 transform -rotate-12">
-                            <path d="M 35 5 Q 25 20 5 30" />
-                            <path d="M 18 32 L 5 30 L 10 18" />
-                        </svg>
-                        <span class="text-[#0a0a0a] font-bold text-[1.1rem] leading-none transform rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">${data.cover.rightAnnotation.replace(/\n/g, '<br>')}</span>
-                    </div>
+                        <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
+                            <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
+                                ${formatMultiline(data.cover.leftAnnotation)}
+                            </span>
 
-                    <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center">
-                        <h2 class="title-text text-white mb-2" style="font-size: 2.15rem; line-height: 1;">
-                            ${titleFormatted}
-                        </h2>
-                        <p class="uppercase font-bold text-gray-300 mb-4 mt-2" style="font-family: 'Hanken Grotesk', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em;">
-                            ${data.cover.subtitle}
-                        </p>
-                        <svg width="45" height="15" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="brand-text">
-                            <path d="M 0 10 Q 25 12 46 10 M 35 2 L 48 10 L 35 18" />
-                        </svg>
+                            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mt-2 ml-4 transform rotate-12">
+                                <path d="M 5 5 Q 15 20 35 30" />
+                                <path d="M 22 32 L 35 30 L 30 18" />
+                            </svg>
+                        </div>
+
+                        <div class="absolute top-16 right-3 z-40 flex flex-col items-center">
+                            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mb-2 mr-4 transform -rotate-12">
+                                <path d="M 35 5 Q 25 20 5 30" />
+                                <path d="M 18 32 L 5 30 L 10 18" />
+                            </svg>
+
+                            <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
+                                ${formatMultiline(data.cover.rightAnnotation)}
+                            </span>
+                        </div>
+
+                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center">
+                            <h2 class="title-text text-white mb-2" style="font-size: 1.95rem; line-height: 1.02;">
+                                ${titleFormatted}
+                            </h2>
+
+                            <p class="uppercase font-bold text-gray-300 mb-4 mt-2" style="font-family: 'Hanken Grotesk', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em;">
+                                ${escapeHtml(data.cover.subtitle)}
+                            </p>
+
+                            <svg width="45" height="15" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="brand-text">
+                                <path d="M 0 10 Q 25 12 46 10 M 35 2 L 48 10 L 35 18" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>`;
+            `;
 
             data.slides.forEach((slide, index) => {
                 const cleanTitle = cleanSlideTitle(slide.title);
 
                 htmlContent += `
+                    <div class="slide brand-bg text-white flex flex-col items-center text-center">
+                        <div class="body-content">
+                            <div class="step-number text-white opacity-90">#${index + 1}</div>
+                            <h3 class="body-title">${escapeHtml(cleanTitle)}</h3>
+                            <p class="body-text">${escapeHtml(slide.text)}</p>
+                        </div>
+
+                        <div class="logo-footer">
+                            <div class="logo-name">Davide di Leo</div>
+                            <div class="logo-handle">@davidedileo.official</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            htmlContent += `
                 <div class="slide brand-bg text-white flex flex-col items-center text-center">
-                    <div class="step-number text-white opacity-90">#${index + 1}</div>
-                    <h3 class="body-title">${cleanTitle}</h3>
-                    <p class="body-text">${slide.text}</p>
+                    <div class="cta-content">
+                        <p class="cta-top">${escapeHtml(data.cta.topText)}</p>
+                        <h3 class="cta-main brand-text-invert">${formatMultiline(data.cta.mainText)}</h3>
+                        <p class="cta-bottom">${escapeHtml(data.cta.bottomText)}</p>
+                    </div>
+
                     <div class="logo-footer">
                         <div class="logo-name">Davide di Leo</div>
                         <div class="logo-handle">@davidedileo.official</div>
                     </div>
-                </div>`;
-            });
-
-            htmlContent += `
-            <div class="slide brand-bg text-white flex flex-col items-center text-center">
-                <div class="my-auto w-full">
-                    <p class="font-bold text-[0.85rem] uppercase tracking-widest mb-4 text-[#0a0a0a]">${data.cta.topText}</p>
-                    <h3 class="title-text brand-text-invert" style="font-size: 2.8rem; text-transform: uppercase; line-height: 1;">${data.cta.mainText.replace(/\n/g, '<br>')}</h3>
-                    <p class="body-text mt-5" style="white-space: pre-line;">${data.cta.bottomText}</p>
                 </div>
-                <div class="logo-footer">
-                    <div class="logo-name">Davide di Leo</div>
-                    <div class="logo-handle">@davidedileo.official</div>
-                </div>
-            </div>`;
+            `;
 
             track.innerHTML = htmlContent;
             applyColors();
@@ -344,48 +595,66 @@
 
         function applyColors() {
             const bgColor = document.getElementById('bgColor').value;
-            document.getElementById('hexValue').textContent = bgColor;
-            document.querySelectorAll('.brand-text').forEach(el => el.style.color = bgColor);
-            document.querySelectorAll('.brand-bg').forEach(el => el.style.backgroundColor = bgColor);
-            document.querySelectorAll('.brand-text-invert').forEach(el => el.style.color = '#0a0a0a');
-        }
 
-        document.getElementById('bgColor').addEventListener('input', applyColors);
+            document.getElementById('hexValue').textContent = bgColor;
+
+            document.querySelectorAll('.brand-text').forEach(el => {
+                el.style.color = bgColor;
+            });
+
+            document.querySelectorAll('.brand-bg').forEach(el => {
+                el.style.backgroundColor = bgColor;
+            });
+
+            document.querySelectorAll('.brand-text-invert').forEach(el => {
+                el.style.color = '#0a0a0a';
+            });
+        }
 
         async function downloadAllSlidesAsZip() {
             const btn = document.getElementById('downloadBtn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = "Generazione in corso..."; 
+
+            btn.innerHTML = "Generazione in corso...";
             btn.disabled = true;
-            
+
             const zip = new JSZip();
             const slides = document.querySelectorAll('.slide');
 
             try {
                 for (let i = 0; i < slides.length; i++) {
-                    slides[i].scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
-                    await new Promise(r => setTimeout(r, 200));
+                    slides[i].scrollIntoView({
+                        behavior: 'instant',
+                        block: 'center',
+                        inline: 'center'
+                    });
+
+                    await new Promise(resolve => setTimeout(resolve, 250));
 
                     const canvas = await html2canvas(slides[i], {
-                        scale: 2, 
-                        useCORS: true, 
-                        backgroundColor: null, 
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: null,
                         logging: false
                     });
 
                     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
                     zip.file(`slide-${i + 1}.png`, blob);
                 }
 
                 const content = await zip.generateAsync({ type: 'blob' });
                 saveAs(content, 'davidedileo-carousel.zip');
 
-            } catch(e) {
-                alert("Errore esportazione.");
+            } catch (error) {
+                alert("Errore esportazione. Se usi immagini esterne, prova a caricarle dal tuo computer invece che da URL.");
             } finally {
-                btn.innerHTML = originalText; 
+                btn.innerHTML = originalText;
                 btn.disabled = false;
-                if(slides.length > 0) slides[0].scrollIntoView({ behavior: 'smooth' });
+
+                if (slides.length > 0) {
+                    slides[0].scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
     </script>
