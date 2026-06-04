@@ -93,7 +93,7 @@
         .cover-logo {
             font-family: 'Hanken Grotesk', sans-serif;
             font-weight: 900;
-            text-transform: lowercase;
+            text-transform: uppercase;
             color: #0a0a0a;
             font-size: 5.55rem;
             line-height: 0.82;
@@ -101,15 +101,15 @@
             transform: scaleX(1.03);
             white-space: nowrap;
             margin-top: 10px;
-            margin-bottom: -8px;
+            margin-bottom: -10px;
             position: relative;
             z-index: 5;
         }
 
         .cover-stage {
             width: 340px;
-            flex: 1;
-            margin: 0 auto 20px auto;
+            height: 390px;
+            margin: 0 auto 0 auto;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -121,23 +121,26 @@
 
         .cover-panel {
             position: absolute;
-            inset: 0;
-            border-radius: 22px;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            border-radius: 22px 22px 0 0;
             overflow: hidden;
             z-index: 10;
             background:
-                radial-gradient(circle at 28% 18%, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.12) 26%, rgba(255,255,255,0) 54%),
-                linear-gradient(180deg, #b9d7d2 0%, #8fbbb9 33%, #3f7985 68%, #10262b 100%);
+                radial-gradient(circle at 30% 14%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.16) 30%, rgba(255,255,255,0) 60%),
+                linear-gradient(180deg, #c8dfdc 0%, #a9ceca 32%, #4f8790 66%, #0a0f10 100%);
         }
 
         .cover-panel::after {
             content: "";
             position: absolute;
             inset: 0;
-            opacity: 0.16;
+            opacity: 0.14;
             background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
-                linear-gradient(180deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+                linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(0,0,0,0.10) 1px, transparent 1px);
             background-size: 18px 18px;
             mix-blend-mode: overlay;
             pointer-events: none;
@@ -148,7 +151,6 @@
             left: 0;
             bottom: 0;
             width: 100%;
-            border-radius: 0 0 22px 22px;
             pointer-events: none;
         }
 
@@ -288,7 +290,7 @@
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
                 <label class="block text-sm font-medium mb-2 text-gray-300">1. Sfondo interno card</label>
-                <p class="text-[10px] text-gray-400 mb-2">Ora lo sfondo interno è generato in CSS, più chiaro e con texture leggera come nella reference.</p>
+                <p class="text-[10px] text-gray-400 mb-2">Sfondo interno generato in CSS, più chiaro e con texture leggera.</p>
                 <input type="text" id="bgImage" value="" class="w-full bg-gray-900 text-gray-400 border border-gray-600 rounded p-2 text-[10px] mb-1" placeholder="Opzionale: URL immagine sfondo" oninput="generateFromScript()">
             </div>
 
@@ -325,23 +327,23 @@
 
                 <div class="mb-3">
                     <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">68%</span>
+                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">72%</span>
                     </label>
-                    <input type="range" id="gradientStart" min="35" max="90" value="68" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                    <input type="range" id="gradientStart" min="35" max="95" value="72" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
 
                 <div class="mb-3">
                     <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Intensità Gradiente <span id="gradientIntensityVal" class="text-blue-400">82%</span>
+                        Intensità Gradiente <span id="gradientIntensityVal" class="text-blue-400">86%</span>
                     </label>
-                    <input type="range" id="gradientIntensity" min="20" max="100" value="82" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                    <input type="range" id="gradientIntensity" min="20" max="100" value="86" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
 
                 <div>
                     <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">42%</span>
+                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">52%</span>
                     </label>
-                    <input type="range" id="blackBase" min="20" max="75" value="42" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                    <input type="range" id="blackBase" min="20" max="85" value="52" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
             </div>
 
@@ -384,7 +386,7 @@
     <script>
         const defaultScript = {
             "cover": {
-                "magazineTitle": "foundr",
+                "magazineTitle": "IMPULSE",
                 "leftAnnotation": "Michael\nBaum",
                 "rightAnnotation": "Co-founder\nSplunk",
                 "title": "DA STEVE JOBS A\n[BRAND]$28 MILIARDI[/BRAND]\nCON SPLUNK",
@@ -569,11 +571,11 @@
                     linear-gradient(
                         to bottom,
                         rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.08 * intensity}) 14%,
-                        rgba(10,10,10,${0.24 * intensity}) 28%,
-                        rgba(10,10,10,${0.52 * intensity}) 44%,
-                        rgba(10,10,10,${0.82 * intensity}) 62%,
-                        rgba(10,10,10,${0.97 * intensity}) 80%,
+                        rgba(10,10,10,${0.08 * intensity}) 12%,
+                        rgba(10,10,10,${0.24 * intensity}) 26%,
+                        rgba(10,10,10,${0.52 * intensity}) 42%,
+                        rgba(10,10,10,${0.84 * intensity}) 62%,
+                        rgba(10,10,10,${0.98 * intensity}) 82%,
                         rgba(10,10,10,${1 * intensity}) 100%
                     )
                 `;
@@ -583,8 +585,8 @@
                     linear-gradient(
                         to bottom,
                         rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.46 * intensity}) 34%,
-                        rgba(10,10,10,${0.88 * intensity}) 64%,
+                        rgba(10,10,10,${0.46 * intensity}) 28%,
+                        rgba(10,10,10,${0.88 * intensity}) 58%,
                         rgba(10,10,10,${1 * intensity}) 100%
                     )
                 `;
@@ -651,9 +653,9 @@
                                 transform-origin: bottom center;
                              ">
 
-                        <div id="mainGradient" class="cover-gradient h-[68%]" style="z-index: 30;"></div>
+                        <div id="mainGradient" class="cover-gradient h-[72%]" style="z-index: 30;"></div>
 
-                        <div id="baseGradient" class="cover-gradient h-[42%]" style="z-index: 31;"></div>
+                        <div id="baseGradient" class="cover-gradient h-[52%]" style="z-index: 31;"></div>
 
                         <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
                             <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
