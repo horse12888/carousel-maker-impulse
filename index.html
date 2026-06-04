@@ -16,10 +16,20 @@
     <style>
         @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Hanken Grotesk', sans-serif;
             background-color: #0a0a0a;
             color: white;
+        }
+
+        img {
+            image-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            backface-visibility: hidden;
         }
 
         .carousel-track {
@@ -222,7 +232,7 @@
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
                 <label class="block text-sm font-medium mb-1 text-gray-300">2. Soggetto in 3D</label>
-                <p class="text-[10px] text-gray-400 mb-2">Carica una foto scontornata, PNG o JPG.</p>
+                <p class="text-[10px] text-gray-400 mb-2">Carica una foto scontornata, meglio PNG ad alta risoluzione.</p>
 
                 <div class="relative">
                     <input type="file" id="localImageInput" accept="image/png, image/jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
@@ -234,9 +244,9 @@
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">102%</span>
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">100%</span>
                         </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="102" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageScale" min="60" max="150" value="100" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
 
                     <div>
@@ -475,8 +485,11 @@
             const heroImg = document.getElementById('heroImage');
 
             if (heroImg) {
-                heroImg.style.height = scale + '%';
+                heroImg.style.width = '88%';
+                heroImg.style.height = 'auto';
                 heroImg.style.bottom = yPos + '%';
+                heroImg.style.transform = `translateX(-50%) scale(${scale / 100})`;
+                heroImg.style.transformOrigin = 'bottom center';
             }
         }
 
@@ -568,9 +581,15 @@
                         </div>
 
                         <img id="heroImage" src="${fgImage}"
-                             class="absolute left-1/2 transform -translate-x-1/2 w-[88%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
-                             style="height: ${scale}%; bottom: ${yPos}%;">
-
+                             class="absolute left-1/2 z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
+                             style="
+                                width: 88%;
+                                height: auto;
+                                max-height: none;
+                                bottom: ${yPos}%;
+                                transform: translateX(-50%) scale(${scale / 100});
+                                transform-origin: bottom center;
+                             ">
 
                         <div id="mainGradient" class="absolute left-0 bottom-0 w-full h-[68%] z-30 pointer-events-none"></div>
 
@@ -651,6 +670,7 @@
 
             track.innerHTML = htmlContent;
             applyColors();
+            updateImageLive();
             updateGradientLive();
         }
 
@@ -694,12 +714,12 @@
                         inline: 'center'
                     });
 
-                    await new Promise(resolve => setTimeout(resolve, 350));
+                    await new Promise(resolve => setTimeout(resolve, 450));
 
                     const canvas = await html2canvas(slides[i], {
                         scale: 4,
                         useCORS: true,
-                        allowTaint: true,
+                        allowTaint: false,
                         backgroundColor: null,
                         logging: false,
                         imageTimeout: 0,
