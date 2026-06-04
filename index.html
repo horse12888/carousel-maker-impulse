@@ -68,7 +68,7 @@
         }
 
         .slide-cover {
-            overflow: visible !important;
+            overflow: hidden !important;
             padding: 10px 0 0 0;
             align-items: center;
         }
@@ -209,6 +209,7 @@
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
                 <label class="block text-sm font-medium mb-2 text-gray-300">1. Stile Sfondo Copertina</label>
+
                 <select id="bgPreset" onchange="updateBgPreset()" class="w-full bg-gray-900 text-white border border-gray-600 rounded p-2 text-xs mb-2 cursor-pointer focus:outline-none focus:border-blue-500">
                     <option value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 1: Ufficio Sfocato</option>
                     <option value="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 2: Muro di Mattoni</option>
@@ -552,9 +553,9 @@
             const titleFormatted = formatCoverTitle(data.cover.title);
 
             htmlContent += `
-                <div class="slide slide-cover brand-bg text-center" style="padding-top: 10px;">
+                <div class="slide slide-cover brand-bg text-center" style="padding-top: 10px; overflow: hidden !important;">
 
-                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 6.15rem; line-height: 0.74; margin-bottom: -6px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.08);">
+                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.78rem; line-height: 0.76; margin-bottom: -2px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.03); white-space: nowrap;">
                         ${escapeHtml(data.cover.magazineTitle)}
                     </h1>
 
