@@ -81,14 +81,6 @@
             letter-spacing: -1px;
         }
 
-        .sub-text {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
         .body-content {
             width: 100%;
             min-height: 355px;
@@ -222,6 +214,7 @@
                     <option value="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 2: Muro di Mattoni</option>
                     <option value="https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 3: Cemento Industrial</option>
                 </select>
+
                 <input type="text" id="bgImage" value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full bg-gray-900 text-gray-400 border border-gray-600 rounded p-2 text-[10px] mb-1" placeholder="URL Immagine personalizzata" oninput="generateFromScript()">
             </div>
 
@@ -244,16 +237,16 @@
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">105%</span>
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">95%</span>
                         </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="105" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageScale" min="60" max="150" value="95" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">12%</span>
+                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">8%</span>
                         </label>
-                        <input type="range" id="imageY" min="-10" max="100" value="12" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageY" min="-10" max="100" value="8" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
                 </div>
             </div>
@@ -498,11 +491,11 @@
 
             htmlContent += `
                 <div class="slide slide-cover brand-bg text-center" style="padding-top: 20px;">
-                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 4.55rem; line-height: 0.85; margin-bottom: 18px; z-index: 0; letter-spacing: -3px;">
+                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 4.15rem; line-height: 0.85; margin-bottom: 28px; z-index: 0; letter-spacing: -3px;">
                         ${escapeHtml(data.cover.magazineTitle)}
                     </h1>
 
-                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px);">
+                    <div class="relative w-[340px] flex-1 mb-5 flex flex-col justify-end mx-auto" style="clip-path: inset(-100% 0 0 0 round 0 0 20px 20px); transform: translateY(8px);">
 
                         <div class="absolute inset-0 rounded-[20px] overflow-hidden shadow-2xl z-10">
                             <div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
@@ -510,11 +503,11 @@
                         </div>
 
                         <img id="heroImage" src="${fgImage}"
-                             class="absolute left-1/2 transform -translate-x-1/2 w-[85%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
+                             class="absolute left-1/2 transform -translate-x-1/2 w-[82%] object-contain object-bottom z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
                              style="height: ${scale}%; bottom: ${yPos}%;">
 
 
-                        <div class="absolute bottom-0 left-0 w-full h-[78%] bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent z-30 pointer-events-none"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-[72%] bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/92 to-transparent z-30 pointer-events-none"></div>
 
                         <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
                             <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
@@ -539,7 +532,7 @@
                         </div>
 
                         <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center">
-                            <h2 class="title-text text-white mb-2" style="font-size: 1.95rem; line-height: 1.02;">
+                            <h2 class="title-text text-white mb-2" style="font-size: 1.82rem; line-height: 1.03;">
                                 ${titleFormatted}
                             </h2>
 
