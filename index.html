@@ -32,6 +32,12 @@
             backface-visibility: hidden;
         }
 
+        #heroImage {
+            image-rendering: auto;
+            filter: none;
+            will-change: transform;
+        }
+
         .carousel-track {
             display: flex;
             gap: 40px;
@@ -581,7 +587,8 @@
                         </div>
 
                         <img id="heroImage" src="${fgImage}"
-                             class="absolute left-1/2 z-20 drop-shadow-2xl pointer-events-none transition-all duration-75"
+                             class="absolute left-1/2 z-20 pointer-events-none transition-all duration-75"
+                             decoding="sync"
                              style="
                                 width: 88%;
                                 height: auto;
@@ -720,15 +727,18 @@
                         scale: 4,
                         useCORS: true,
                         allowTaint: false,
-                        backgroundColor: null,
+                        backgroundColor: '#276f8f',
                         logging: false,
                         imageTimeout: 0,
                         removeContainer: true,
-                        windowWidth: document.documentElement.scrollWidth,
-                        windowHeight: document.documentElement.scrollHeight
+                        foreignObjectRendering: false,
+                        windowWidth: 1920,
+                        windowHeight: 2400
                     });
 
-                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+                    const blob = await new Promise(resolve => {
+                        canvas.toBlob(resolve, 'image/png');
+                    });
 
                     zip.file(`slide-${i + 1}.png`, blob);
                 }
