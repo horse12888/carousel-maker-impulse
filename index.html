@@ -65,6 +65,7 @@
             flex-direction: column;
             justify-content: flex-start;
             overflow: hidden;
+            transform: translateZ(0);
         }
 
         .slide-cover {
@@ -293,7 +294,7 @@
 
         <div class="mt-4 pt-4 border-t border-gray-800">
             <button id="downloadBtn" onclick="downloadAllSlidesAsZip()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center gap-2">
-                Esporta ZIP
+                Esporta ZIP Massima Qualità
             </button>
         </div>
     </div>
@@ -675,13 +676,17 @@
             const btn = document.getElementById('downloadBtn');
             const originalText = btn.innerHTML;
 
-            btn.innerHTML = "Generazione in corso...";
+            btn.innerHTML = "Generazione massima qualità...";
             btn.disabled = true;
 
             const zip = new JSZip();
             const slides = document.querySelectorAll('.slide');
 
             try {
+                if (document.fonts && document.fonts.ready) {
+                    await document.fonts.ready;
+                }
+
                 for (let i = 0; i < slides.length; i++) {
                     slides[i].scrollIntoView({
                         behavior: 'instant',
@@ -689,24 +694,30 @@
                         inline: 'center'
                     });
 
-                    await new Promise(resolve => setTimeout(resolve, 250));
+                    await new Promise(resolve => setTimeout(resolve, 350));
 
                     const canvas = await html2canvas(slides[i], {
-                        scale: 2,
+                        scale: 4,
                         useCORS: true,
+                        allowTaint: true,
                         backgroundColor: null,
-                        logging: false
+                        logging: false,
+                        imageTimeout: 0,
+                        removeContainer: true,
+                        windowWidth: document.documentElement.scrollWidth,
+                        windowHeight: document.documentElement.scrollHeight
                     });
 
-                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
 
                     zip.file(`slide-${i + 1}.png`, blob);
                 }
 
                 const content = await zip.generateAsync({ type: 'blob' });
-                saveAs(content, 'davidedileo-carousel.zip');
+                saveAs(content, 'davidedileo-carousel-HQ.zip');
 
             } catch (error) {
+                console.error(error);
                 alert("Errore esportazione. Se usi immagini esterne, prova a caricarle dal tuo computer invece che da URL.");
             } finally {
                 btn.innerHTML = originalText;
