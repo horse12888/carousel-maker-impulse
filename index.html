@@ -90,7 +90,23 @@
             align-items: center;
         }
 
-        .cover-card {
+        .cover-logo {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 900;
+            text-transform: lowercase;
+            color: #0a0a0a;
+            font-size: 5.55rem;
+            line-height: 0.82;
+            letter-spacing: -6px;
+            transform: scaleX(1.03);
+            white-space: nowrap;
+            margin-top: 10px;
+            margin-bottom: -8px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .cover-stage {
             width: 340px;
             flex: 1;
             margin: 0 auto 20px auto;
@@ -98,9 +114,42 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            border-radius: 20px;
+            overflow: visible;
+            transform: translateY(-2px);
+            isolation: isolate;
+        }
+
+        .cover-panel {
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
             overflow: hidden;
-            transform: translateY(-18px);
+            z-index: 10;
+            background:
+                radial-gradient(circle at 28% 18%, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.12) 26%, rgba(255,255,255,0) 54%),
+                linear-gradient(180deg, #b9d7d2 0%, #8fbbb9 33%, #3f7985 68%, #10262b 100%);
+        }
+
+        .cover-panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.16;
+            background-image:
+                linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 18px 18px;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        .cover-gradient {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            border-radius: 0 0 22px 22px;
+            pointer-events: none;
         }
 
         .title-text {
@@ -238,15 +287,9 @@
             </div>
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <label class="block text-sm font-medium mb-2 text-gray-300">1. Stile Sfondo Copertina</label>
-
-                <select id="bgPreset" onchange="updateBgPreset()" class="w-full bg-gray-900 text-white border border-gray-600 rounded p-2 text-xs mb-2 cursor-pointer focus:outline-none focus:border-blue-500">
-                    <option value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 1: Ufficio Sfocato</option>
-                    <option value="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 2: Muro di Mattoni</option>
-                    <option value="https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">Stile 3: Cemento Industrial</option>
-                </select>
-
-                <input type="text" id="bgImage" value="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full bg-gray-900 text-gray-400 border border-gray-600 rounded p-2 text-[10px] mb-1" placeholder="URL Immagine personalizzata" oninput="generateFromScript()">
+                <label class="block text-sm font-medium mb-2 text-gray-300">1. Sfondo interno card</label>
+                <p class="text-[10px] text-gray-400 mb-2">Ora lo sfondo interno è generato in CSS, più chiaro e con texture leggera come nella reference.</p>
+                <input type="text" id="bgImage" value="" class="w-full bg-gray-900 text-gray-400 border border-gray-600 rounded p-2 text-[10px] mb-1" placeholder="Opzionale: URL immagine sfondo" oninput="generateFromScript()">
             </div>
 
             <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
@@ -263,16 +306,16 @@
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">100%</span>
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">96%</span>
                         </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="100" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageScale" min="60" max="150" value="96" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">2%</span>
+                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">4%</span>
                         </label>
-                        <input type="range" id="imageY" min="-10" max="100" value="2" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageY" min="-10" max="100" value="4" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
                 </div>
             </div>
@@ -341,7 +384,7 @@
     <script>
         const defaultScript = {
             "cover": {
-                "magazineTitle": "IMPULSE",
+                "magazineTitle": "foundr",
                 "leftAnnotation": "Michael\nBaum",
                 "rightAnnotation": "Co-founder\nSplunk",
                 "title": "DA STEVE JOBS A\n[BRAND]$28 MILIARDI[/BRAND]\nCON SPLUNK",
@@ -488,12 +531,6 @@
             generateFromScript();
         }
 
-        function updateBgPreset() {
-            const presetUrl = document.getElementById('bgPreset').value;
-            document.getElementById('bgImage').value = presetUrl;
-            generateFromScript();
-        }
-
         function updateImageLive() {
             const scale = document.getElementById('imageScale').value;
             const yPos = document.getElementById('imageY').value;
@@ -532,11 +569,11 @@
                     linear-gradient(
                         to bottom,
                         rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.04 * intensity}) 14%,
-                        rgba(10,10,10,${0.18 * intensity}) 28%,
-                        rgba(10,10,10,${0.44 * intensity}) 44%,
-                        rgba(10,10,10,${0.78 * intensity}) 62%,
-                        rgba(10,10,10,${0.96 * intensity}) 80%,
+                        rgba(10,10,10,${0.08 * intensity}) 14%,
+                        rgba(10,10,10,${0.24 * intensity}) 28%,
+                        rgba(10,10,10,${0.52 * intensity}) 44%,
+                        rgba(10,10,10,${0.82 * intensity}) 62%,
+                        rgba(10,10,10,${0.97 * intensity}) 80%,
                         rgba(10,10,10,${1 * intensity}) 100%
                     )
                 `;
@@ -546,8 +583,8 @@
                     linear-gradient(
                         to bottom,
                         rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.42 * intensity}) 38%,
-                        rgba(10,10,10,${0.84 * intensity}) 68%,
+                        rgba(10,10,10,${0.46 * intensity}) 34%,
+                        rgba(10,10,10,${0.88 * intensity}) 64%,
                         rgba(10,10,10,${1 * intensity}) 100%
                     )
                 `;
@@ -585,18 +622,21 @@
 
             const titleFormatted = formatCoverTitle(data.cover.title);
 
+            const optionalBgImage = bgImage.trim()
+                ? `<div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; opacity: 0.42; mix-blend-mode: multiply;"></div>`
+                : '';
+
             htmlContent += `
                 <div class="slide slide-cover brand-bg text-center">
 
-                    <h1 class="brand-text-invert uppercase font-black" style="font-size: 5.78rem; line-height: 0.82; margin-bottom: -2px; z-index: 0; letter-spacing: -6px; transform: scaleX(1.03); white-space: nowrap;">
+                    <h1 class="cover-logo">
                         ${escapeHtml(data.cover.magazineTitle)}
                     </h1>
 
-                    <div class="cover-card">
+                    <div class="cover-stage">
 
-                        <div class="absolute inset-0 z-10">
-                            <div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; mix-blend-mode: multiply; opacity: 0.6;"></div>
-                            <div class="absolute inset-0 bg-[#0a0a0a]/22"></div>
+                        <div class="cover-panel">
+                            ${optionalBgImage}
                         </div>
 
                         <img id="heroImage" src="${fgImage}"
@@ -611,9 +651,9 @@
                                 transform-origin: bottom center;
                              ">
 
-                        <div id="mainGradient" class="absolute left-0 bottom-0 w-full h-[68%] z-30 pointer-events-none"></div>
+                        <div id="mainGradient" class="cover-gradient h-[68%]" style="z-index: 30;"></div>
 
-                        <div id="baseGradient" class="absolute left-0 bottom-0 w-full h-[42%] z-31 pointer-events-none"></div>
+                        <div id="baseGradient" class="cover-gradient h-[42%]" style="z-index: 31;"></div>
 
                         <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
                             <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
@@ -637,7 +677,7 @@
                             </span>
                         </div>
 
-                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center" style="transform: translateY(-10px);">
+                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center" style="transform: translateY(-8px);">
                             <h2 class="title-text text-white mb-2" style="font-size: 1.96rem; line-height: 1.01;">
                                 ${titleFormatted}
                             </h2>
