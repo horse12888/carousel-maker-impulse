@@ -225,11 +225,6 @@
                 <div class="relative">
                     <input type="file" id="localImageInput" accept="image/png, image/jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
                         Carica PNG Scontornato
                     </button>
                 </div>
@@ -237,17 +232,42 @@
                 <div class="mt-4 pt-4 border-t border-gray-700">
                     <div class="mb-3">
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">106%</span>
+                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">102%</span>
                         </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="106" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageScale" min="60" max="150" value="102" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">-2%</span>
+                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">2%</span>
                         </label>
-                        <input type="range" id="imageY" min="-10" max="100" value="-2" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
+                        <input type="range" id="imageY" min="-10" max="100" value="2" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
                     </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+                <label class="block text-sm font-medium mb-2 text-gray-300">3. Gradiente Cover</label>
+
+                <div class="mb-3">
+                    <label class="text-xs font-bold text-gray-300 flex justify-between">
+                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">68%</span>
+                    </label>
+                    <input type="range" id="gradientStart" min="35" max="90" value="68" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                </div>
+
+                <div class="mb-3">
+                    <label class="text-xs font-bold text-gray-300 flex justify-between">
+                        Intensità Gradiente <span id="gradientIntensityVal" class="text-blue-400">82%</span>
+                    </label>
+                    <input type="range" id="gradientIntensity" min="20" max="100" value="82" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-300 flex justify-between">
+                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">42%</span>
+                    </label>
+                    <input type="range" id="blackBase" min="20" max="75" value="42" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
                 </div>
             </div>
 
@@ -458,6 +478,48 @@
             }
         }
 
+        function updateGradientLive() {
+            const gradientStart = document.getElementById('gradientStart').value;
+            const gradientIntensity = document.getElementById('gradientIntensity').value;
+            const blackBase = document.getElementById('blackBase').value;
+
+            document.getElementById('gradientStartVal').innerText = gradientStart + '%';
+            document.getElementById('gradientIntensityVal').innerText = gradientIntensity + '%';
+            document.getElementById('blackBaseVal').innerText = blackBase + '%';
+
+            const mainGradient = document.getElementById('mainGradient');
+            const baseGradient = document.getElementById('baseGradient');
+
+            if (mainGradient && baseGradient) {
+                const intensity = gradientIntensity / 100;
+
+                mainGradient.style.height = gradientStart + '%';
+                mainGradient.style.background = `
+                    linear-gradient(
+                        to bottom,
+                        rgba(10,10,10,0) 0%,
+                        rgba(10,10,10,${0.04 * intensity}) 14%,
+                        rgba(10,10,10,${0.18 * intensity}) 28%,
+                        rgba(10,10,10,${0.44 * intensity}) 44%,
+                        rgba(10,10,10,${0.78 * intensity}) 62%,
+                        rgba(10,10,10,${0.96 * intensity}) 80%,
+                        rgba(10,10,10,${1 * intensity}) 100%
+                    )
+                `;
+
+                baseGradient.style.height = blackBase + '%';
+                baseGradient.style.background = `
+                    linear-gradient(
+                        to bottom,
+                        rgba(10,10,10,0) 0%,
+                        rgba(10,10,10,${0.42 * intensity}) 38%,
+                        rgba(10,10,10,${0.84 * intensity}) 68%,
+                        rgba(10,10,10,${1 * intensity}) 100%
+                    )
+                `;
+            }
+        }
+
         function generateFromScript() {
             const track = document.getElementById('carouselTrack');
             const data = parseScriptInput();
@@ -508,28 +570,9 @@
                              style="height: ${scale}%; bottom: ${yPos}%;">
 
 
-                        <div class="absolute left-0 bottom-0 w-full h-[82%] z-30 pointer-events-none"
-                             style="background: linear-gradient(
-                                to bottom,
-                                rgba(10,10,10,0) 0%,
-                                rgba(10,10,10,0.08) 10%,
-                                rgba(10,10,10,0.30) 22%,
-                                rgba(10,10,10,0.62) 36%,
-                                rgba(10,10,10,0.88) 50%,
-                                rgba(10,10,10,0.98) 66%,
-                                rgba(10,10,10,1) 100%
-                             );">
-                        </div>
+                        <div id="mainGradient" class="absolute left-0 bottom-0 w-full h-[68%] z-30 pointer-events-none"></div>
 
-                        <div class="absolute left-0 bottom-0 w-full h-[58%] z-31 pointer-events-none"
-                             style="background: linear-gradient(
-                                to bottom,
-                                rgba(10,10,10,0) 0%,
-                                rgba(10,10,10,0.74) 38%,
-                                rgba(10,10,10,0.96) 58%,
-                                rgba(10,10,10,1) 100%
-                             );">
-                        </div>
+                        <div id="baseGradient" class="absolute left-0 bottom-0 w-full h-[42%] z-31 pointer-events-none"></div>
 
                         <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
                             <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
@@ -606,6 +649,7 @@
 
             track.innerHTML = htmlContent;
             applyColors();
+            updateGradientLive();
         }
 
         function applyColors() {
