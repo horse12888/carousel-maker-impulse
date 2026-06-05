@@ -151,6 +151,7 @@
     align-items: center;
     cursor: grab;
     user-select: none;
+    overflow: visible;
   }
 
   .cover-ann:active {
@@ -168,6 +169,7 @@
   .cover-ann svg {
     overflow: visible;
     flex-shrink: 0;
+    display: block;
   }
 
   .cover-title {
@@ -316,6 +318,14 @@
           <input type="color" id="bgColor" value="#266e8d" class="w-10 h-10 rounded cursor-pointer bg-gray-800 border-none p-1" />
           <span id="hexValue" class="text-sm font-mono text-gray-400">#266e8d</span>
         </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Colore IMPULSE</label>
+        <select id="logoColorSelect" onchange="applyColors()" class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm">
+          <option value="#0a0a0a" selected>Nero</option>
+          <option value="#ffffff">Bianco</option>
+        </select>
       </div>
 
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
@@ -775,16 +785,16 @@
 
         <div id="annLeft" class="cover-ann" style="top:${annPositions.left.y}px; left:${annPositions.left.x}px;">
           <span style="transform:rotate(-6deg);">${formatMultiline(data.cover.leftAnnotation)}</span>
-          <svg width="42" height="42" viewBox="0 0 60 60" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:8px; margin-left:18px; transform:rotate(12deg); overflow:visible;">
-            <path d="M 8 8 Q 22 34 50 45" />
-            <path d="M 34 48 L 50 45 L 43 29" />
+          <svg width="74" height="74" viewBox="0 0 100 100" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px; margin-left:18px; transform:rotate(8deg); overflow:visible;">
+            <path d="M 24 10 C 28 36 42 62 70 78" />
+            <path d="M 46 82 L 70 78 L 62 54" />
           </svg>
         </div>
 
         <div id="annRight" class="cover-ann" style="top:${annPositions.right.y}px; left:${annPositions.right.x}px;">
-          <svg width="42" height="42" viewBox="0 0 60 60" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px; margin-right:18px; transform:rotate(-12deg); overflow:visible;">
-            <path d="M 52 8 Q 38 34 10 45" />
-            <path d="M 26 48 L 10 45 L 17 29" />
+          <svg width="74" height="74" viewBox="0 0 100 100" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0px; margin-right:18px; transform:rotate(-8deg); overflow:visible;">
+            <path d="M 76 10 C 72 36 58 62 30 78" />
+            <path d="M 54 82 L 30 78 L 38 54" />
           </svg>
           <span style="transform:rotate(6deg);">${formatMultiline(data.cover.rightAnnotation)}</span>
         </div>
@@ -839,6 +849,7 @@
 
   function applyColors() {
     const bgColor = document.getElementById('bgColor').value;
+    const logoColor = document.getElementById('logoColorSelect') ? document.getElementById('logoColorSelect').value : '#0a0a0a';
 
     document.getElementById('hexValue').textContent = bgColor;
 
@@ -850,8 +861,8 @@
       el.style.backgroundColor = bgColor;
     });
 
-    document.querySelectorAll('.brand-text-invert').forEach(el => {
-      el.style.color = '#0a0a0a';
+    document.querySelectorAll('.cover-logo').forEach(el => {
+      el.style.color = logoColor;
     });
   }
 
