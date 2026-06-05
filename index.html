@@ -4,28 +4,36 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Davide Di Leo · Carousel Maker</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
 <style>
   @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
+
   * {
     box-sizing: border-box;
   }
+
   body {
     font-family: 'Hanken Grotesk', sans-serif;
     background-color: #0a0a0a;
     color: white;
   }
+
   img {
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     backface-visibility: hidden;
   }
+
   .carousel-track {
     display: flex;
     gap: 40px;
@@ -35,22 +43,27 @@
     align-items: center;
     height: 100%;
   }
+
   .carousel-track::-webkit-scrollbar {
     height: 14px;
   }
+
   .carousel-track::-webkit-scrollbar-track {
     background: #1a1a1a;
     margin: 0 40px;
     border-radius: 8px;
   }
+
   .carousel-track::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 8px;
     border: 4px solid #1a1a1a;
   }
+
   .carousel-track::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
   .slide {
     width: 380px;
     height: 475px;
@@ -66,10 +79,12 @@
     overflow: hidden;
     transform: translateZ(0);
   }
+
   .slide-cover {
     overflow: hidden !important;
     padding: 0;
   }
+
   .cover-card {
     position: absolute;
     top: 134px;
@@ -83,6 +98,7 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
+
   .cover-logo {
     position: absolute;
     top: 10px;
@@ -99,6 +115,7 @@
     letter-spacing: -3px;
     white-space: nowrap;
   }
+
   .photo-clip {
     position: absolute;
     left: 18px;
@@ -109,6 +126,7 @@
     pointer-events: none;
     overflow: hidden;
   }
+
   #heroImage {
     position: absolute;
     left: 50%;
@@ -122,6 +140,7 @@
     -webkit-font-smoothing: antialiased;
     backface-visibility: hidden;
   }
+
   .cover-grad {
     position: absolute;
     left: 18px;
@@ -133,19 +152,25 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
+
   .cover-ann {
     position: absolute;
     z-index: 8;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     cursor: grab;
     user-select: none;
     overflow: visible;
+    width: 110px;
+    height: 90px;
   }
+
   .cover-ann:active {
     cursor: grabbing;
   }
+
   .cover-ann span {
     font-weight: 700;
     font-size: 0.98rem;
@@ -153,11 +178,13 @@
     text-align: center;
     font-family: 'Open Sauce One', 'Hanken Grotesk', sans-serif;
   }
+
   .cover-ann svg {
     overflow: visible;
     flex-shrink: 0;
     display: block;
   }
+
   .cover-title {
     position: absolute;
     left: 18px;
@@ -169,6 +196,7 @@
     flex-direction: column;
     align-items: center;
   }
+
   .title-text {
     font-family: 'Hanken Grotesk', sans-serif;
     font-weight: 900;
@@ -178,6 +206,7 @@
     color: #fff;
     font-size: 1.82rem;
   }
+
   .body-content {
     width: 100%;
     display: flex;
@@ -186,6 +215,7 @@
     align-items: center;
     padding-top: 4px;
   }
+
   .step-number {
     font-family: 'Caveat', cursive;
     font-size: 2.0rem;
@@ -195,6 +225,7 @@
     margin-bottom: 10px;
     color: #ffffff;
   }
+
   .body-title {
     font-weight: 900;
     font-size: 2.0rem;
@@ -204,6 +235,7 @@
     max-width: 330px;
     color: #ffffff;
   }
+
   .body-text {
     font-weight: 600;
     font-size: 0.97rem;
@@ -212,6 +244,7 @@
     max-width: 318px;
     color: rgba(255,255,255,0.88);
   }
+
   .logo-footer {
     width: 100%;
     text-align: center;
@@ -221,6 +254,7 @@
     margin-top: 16px;
     padding-bottom: 6px;
   }
+
   .logo-name {
     font-family: 'Hanken Grotesk', sans-serif;
     font-weight: 900;
@@ -230,6 +264,7 @@
     line-height: 1;
     color: #ffffff;
   }
+
   .logo-handle {
     font-weight: 500;
     font-size: 0.68rem;
@@ -237,6 +272,7 @@
     color: rgba(255,255,255,0.65);
     letter-spacing: 0.04em;
   }
+
   .cta-content {
     width: 100%;
     display: flex;
@@ -245,6 +281,7 @@
     align-items: center;
     padding-top: 4px;
   }
+
   .cta-top {
     font-weight: 600;
     font-size: 0.88rem;
@@ -253,6 +290,7 @@
     max-width: 310px;
     margin-bottom: 18px;
   }
+
   .cta-main {
     font-weight: 900;
     font-size: 2.3rem;
@@ -263,6 +301,7 @@
     margin-bottom: 18px;
     color: #ffffff;
   }
+
   .cta-bottom {
     font-weight: 600;
     font-size: 0.95rem;
@@ -271,16 +310,21 @@
     max-width: 316px;
     white-space: pre-line;
   }
+
   input[type="range"] {
     accent-color: #266e8d;
   }
 </style>
 </head>
+
 <body class="flex h-screen w-full overflow-hidden bg-[#0a0a0a] text-white">
+
   <div class="w-[360px] flex-shrink-0 bg-gray-900 p-6 overflow-y-auto border-r border-gray-800 z-20 flex flex-col">
     <h2 class="text-lg font-bold mb-1 text-white">Carousel Maker</h2>
     <p class="text-[11px] text-gray-500 mb-5">Incolla lo script JSON, carica la foto, esporta in PNG.</p>
+
     <div class="space-y-4 flex-1">
+
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-300">Colore Brand</label>
         <div class="flex items-center gap-3">
@@ -288,6 +332,7 @@
           <span id="hexValue" class="text-sm font-mono text-gray-400">#266e8d</span>
         </div>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-300">Colore IMPULSE</label>
         <select id="logoColorSelect" onchange="applyColors()" class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm">
@@ -295,52 +340,65 @@
           <option value="#ffffff">Bianco</option>
         </select>
       </div>
+
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
         <label class="block text-sm font-medium mb-2 text-gray-300">1 · Soggetto PNG scontornato</label>
         <p class="text-[10px] text-gray-400 mb-2">Carica un PNG trasparente ad alta risoluzione. JPEG o screenshot non vengono scontornati.</p>
+
         <div class="relative">
           <input type="file" id="localImageInput" accept="image/png, image/jpeg, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
           <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded transition-colors">Carica foto</button>
         </div>
+
         <div id="imgPreviewWrap" class="mt-3 hidden">
           <div class="text-[10px] text-gray-400 mb-1 flex justify-between">
             <span>Anteprima file</span>
             <span id="imgPreviewMeta" class="text-gray-500"></span>
           </div>
+
           <div class="rounded-md border border-gray-700 overflow-hidden" style="background-image: linear-gradient(45deg,#374151 25%,transparent 25%),linear-gradient(-45deg,#374151 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#374151 75%),linear-gradient(-45deg,transparent 75%,#374151 75%); background-size:14px 14px; background-position:0 0,0 7px,7px -7px,-7px 0;">
             <img id="imgPreview" class="w-full h-28 object-contain" alt="preview" />
           </div>
+
           <p id="imgWarn" class="text-[10px] text-amber-400 mt-1 hidden">Sembra avere lo sfondo pieno: per il look 3D serve un PNG scontornato con sfondo trasparente.</p>
         </div>
+
         <div class="mt-4 pt-4 border-t border-gray-700">
           <label class="text-xs font-bold text-gray-300 flex justify-between">
             Dimensione <span id="scaleVal" class="text-blue-400">92%</span>
           </label>
           <input type="range" id="imageScale" min="55" max="125" value="92" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
+
           <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
             Posizione verticale <span id="yVal" class="text-blue-400">-10px</span>
           </label>
           <input type="range" id="imageY" min="-80" max="40" value="-10" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
         </div>
       </div>
+
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
         <label class="block text-sm font-medium mb-2 text-gray-300">2 · Gradiente Cover</label>
+
         <label class="text-xs font-bold text-gray-300 flex justify-between">
           Altezza gradiente <span id="gradientStartVal" class="text-blue-400">58%</span>
         </label>
         <input type="range" id="gradientStart" min="35" max="95" value="58" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
+
         <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
           Intensità <span id="gradientIntensityVal" class="text-blue-400">78%</span>
         </label>
         <input type="range" id="gradientIntensity" min="20" max="100" value="78" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
+
         <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
           Nero pieno <span id="blackBaseVal" class="text-blue-400">38%</span>
         </label>
         <input type="range" id="blackBase" min="20" max="85" value="38" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
       </div>
+
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
         <label class="block text-sm font-medium mb-2 text-gray-300">3 · Annotazioni cover</label>
         <p class="text-[10px] text-gray-400 mb-3">Trascina le etichette direttamente sulla foto.</p>
+
         <label class="text-xs font-bold text-gray-300 mb-2 block">Colore testo &amp; frecce</label>
         <div class="flex gap-2 items-center">
           <button onclick="setAnnColor('#0a0a0a')" class="w-8 h-8 rounded-full border-2 border-gray-500" style="background:#0a0a0a;" title="Nero"></button>
@@ -348,8 +406,10 @@
           <input type="color" id="annColorPicker" value="#0a0a0a" class="w-8 h-8 rounded cursor-pointer bg-gray-900 border-none p-0" oninput="setAnnColor(this.value)" title="Colore personalizzato" />
           <span id="annColorHex" class="text-[10px] font-mono text-gray-400">#0a0a0a</span>
         </div>
+
         <button onclick="resetAnnPositions()" class="mt-3 w-full text-[10px] text-gray-400 border border-gray-700 rounded py-1 hover:bg-gray-700 transition-colors">↺ Ripristina posizione default</button>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1 text-yellow-400">Preset CTA finale</label>
         <select id="ctaPreset" onchange="applyCtaPreset()" class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm">
@@ -358,87 +418,111 @@
           <option value="preset2">Servizio · IMPULSE Assessment</option>
         </select>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-300">Script contenuto JSON</label>
         <textarea id="scriptInput" rows="7" class="w-full bg-gray-900 text-green-400 border border-gray-700 rounded p-2 text-[11px] font-mono"></textarea>
       </div>
+
       <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">Genera anteprima</button>
     </div>
+
     <div class="mt-4 pt-4 border-t border-gray-800">
       <button id="downloadBtn" onclick="downloadAllSlidesAsZip()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-all">Esporta ZIP PNG · 1520×1900</button>
     </div>
   </div>
+
   <div class="flex-1 flex flex-col h-full min-w-0 relative">
     <div class="px-8 pt-7 pb-0 flex-shrink-0">
       <h1 class="text-2xl font-bold text-white">Anteprima</h1>
     </div>
+
     <div class="flex-1 overflow-hidden w-full relative">
       <div class="carousel-track" id="carouselTrack"></div>
     </div>
   </div>
+
 <script>
   let annColor = '#0a0a0a';
   let annPositions = {
     left: { x: 8, y: 150 },
     right: { x: 260, y: 166 }
   };
+
   function setAnnColor(color) {
     annColor = color;
+
     const picker = document.getElementById('annColorPicker');
     if (picker) {
       picker.value = (color.length === 7 && color[0] === '#') ? color : '#0a0a0a';
     }
+
     const hex = document.getElementById('annColorHex');
     if (hex) {
       hex.textContent = color;
     }
+
     applyAnnStyle();
   }
+
   function applyAnnStyle() {
     ['annLeft', 'annRight'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
+
       el.querySelectorAll('span').forEach(s => {
         s.style.color = annColor;
       });
+
       el.querySelectorAll('svg').forEach(s => {
         s.setAttribute('stroke', annColor);
       });
     });
   }
+
   function initAnnDrag() {
     const slide = document.querySelector('.slide-cover');
     if (!slide) return;
+
     document.querySelectorAll('.cover-ann').forEach(el => {
       el.addEventListener('mousedown', function(e) {
         e.preventDefault();
+
         const startX = e.clientX - el.offsetLeft;
         const startY = e.clientY - el.offsetTop;
         const key = el.id === 'annLeft' ? 'left' : 'right';
+
         const onMove = (e) => {
           const x = Math.max(0, Math.min(e.clientX - startX, slide.offsetWidth - el.offsetWidth));
           const y = Math.max(0, Math.min(e.clientY - startY, slide.offsetHeight - el.offsetHeight));
+
           el.style.left = x + 'px';
           el.style.top = y + 'px';
           el.style.right = 'auto';
+
           annPositions[key] = { x, y };
         };
+
         const onUp = () => {
           document.removeEventListener('mousemove', onMove);
           document.removeEventListener('mouseup', onUp);
         };
+
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onUp);
       });
     });
   }
+
   function resetAnnPositions() {
     annPositions = {
       left: { x: 8, y: 150 },
       right: { x: 260, y: 166 }
     };
+
     generateFromScript();
   }
+
   const defaultScript = {
     "cover": {
       "magazineTitle": "IMPULSE",
@@ -479,6 +563,7 @@
       "bottomText": "Diagnosi gratuita in 4 minuti per scoprire dove stai perdendo crescita, margine e enterprise value."
     }
   };
+
   const ctaPresets = {
     "preset1": {
       "topText": "Diagnosi in 4 minuti",
@@ -496,38 +581,50 @@
       "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM."
     }
   };
+
   let uploadedImageBase64 = "data:image/svg+xml;utf8," + encodeURIComponent(
     "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='360'><rect width='300' height='360' fill='none'/><text x='150' y='185' font-family='sans-serif' font-size='15' fill='%23ffffff' opacity='0.55' text-anchor='middle'>Carica una foto PNG</text></svg>"
   );
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('scriptInput').value = JSON.stringify(defaultScript, null, 2);
     generateFromScript();
   });
+
   document.getElementById('localImageInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
+
     reader.onload = function(event) {
       uploadedImageBase64 = event.target.result;
       showImagePreview(event.target.result, file);
       generateFromScript();
     };
+
     reader.readAsDataURL(file);
   });
+
   document.getElementById('bgColor').addEventListener('input', applyColors);
+
   function showImagePreview(dataUrl, file) {
     const wrap = document.getElementById('imgPreviewWrap');
     const img = document.getElementById('imgPreview');
     const meta = document.getElementById('imgPreviewMeta');
     const warn = document.getElementById('imgWarn');
+
     wrap.classList.remove('hidden');
     img.src = dataUrl;
+
     const isPng = /image\/png/i.test(file.type);
     meta.textContent = (file.type.split('/')[1] || '').toUpperCase() + ' · ' + Math.round(file.size / 1024) + ' KB';
     warn.classList.toggle('hidden', isPng);
   }
+
   function escapeHtml(value) {
     if (value === undefined || value === null) return '';
+
     return String(value)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -535,25 +632,32 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
   }
+
   function formatMultiline(value) {
     return escapeHtml(value).replace(/\n/g, '<br>');
   }
+
   function formatCoverTitle(value) {
     if (!value) return '';
+
     return escapeHtml(value)
       .replace(/\n/g, '<br>')
       .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, '<span class="brand-text">$1</span>');
   }
+
   function cleanSlideTitle(title) {
     if (!title) return '';
+
     return String(title)
       .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
       .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
       .trim();
   }
+
   function normalizeSmartQuotes(value) {
     return value.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
   }
+
   function parseScriptInput() {
     try {
       return JSON.parse(normalizeSmartQuotes(document.getElementById('scriptInput').value));
@@ -561,22 +665,30 @@
       return null;
     }
   }
+
   function applyCtaPreset() {
     const data = parseScriptInput();
+
     if (!data) {
       alert("Errore nel JSON. Controlla virgole, virgolette e parentesi.");
       return;
     }
+
     data.cta = ctaPresets[document.getElementById('ctaPreset').value];
     document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
+
     generateFromScript();
   }
+
   function updateImageLive() {
     const scale = document.getElementById('imageScale').value;
     const yPos = document.getElementById('imageY').value;
+
     document.getElementById('scaleVal').innerText = scale + '%';
     document.getElementById('yVal').innerText = yPos + 'px';
+
     const heroImg = document.getElementById('heroImage');
+
     if (heroImg) {
       heroImg.style.width = scale + '%';
       heroImg.style.height = 'auto';
@@ -584,19 +696,25 @@
       heroImg.style.marginBottom = '0';
     }
   }
+
   function svgVGrad(stops) {
     const s = stops.map(x => `<stop offset='${x.o}' stop-color='${x.c}'${x.op != null ? ` stop-opacity='${x.op}'` : ''}/>`).join('');
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='240' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>${s}</linearGradient></defs><rect width='4' height='240' fill='url(#g)'/></svg>`;
+
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
+
   function updateGradientLive() {
     const gradientStart = document.getElementById('gradientStart').value;
     const gradientIntensity = document.getElementById('gradientIntensity').value;
     const blackBase = document.getElementById('blackBase').value;
+
     document.getElementById('gradientStartVal').innerText = gradientStart + '%';
     document.getElementById('gradientIntensityVal').innerText = gradientIntensity + '%';
     document.getElementById('blackBaseVal').innerText = blackBase + '%';
+
     const card = document.querySelector('.cover-card');
+
     if (card) {
       card.style.backgroundImage = svgVGrad([
         { o: 0, c: '#d6e8e4' },
@@ -604,77 +722,98 @@
         { o: 1, c: '#0d1f28' }
       ]);
     }
+
     const coverGrad = document.getElementById('coverGrad');
+
     if (coverGrad) {
       const k = gradientIntensity / 100;
       const fadeTop = Math.max(0, 1 - gradientStart / 100);
       const solidTop = Math.max(fadeTop + 0.04, 1 - blackBase / 100);
+
       const stops = [
         { o: 0, c: '#0a0a0a', op: 0 },
         { o: +fadeTop.toFixed(4), c: '#0a0a0a', op: 0 }
       ];
+
       const N = 6;
+
       for (let i = 1; i <= N; i++) {
         const t = i / N;
         const o = fadeTop + (solidTop - fadeTop) * t;
         const op = k * Math.pow(t, 1.5);
+
         stops.push({
           o: +o.toFixed(4),
           c: '#0a0a0a',
           op: +op.toFixed(4)
         });
       }
+
       stops.push({
         o: Math.min(0.9999, +solidTop.toFixed(4)),
         c: '#0a0a0a',
         op: +k.toFixed(4)
       });
+
       stops.push({
         o: 1,
         c: '#0a0a0a',
         op: +k.toFixed(4)
       });
+
       coverGrad.style.backgroundImage = svgVGrad(stops);
     }
   }
+
   function generateFromScript() {
     const track = document.getElementById('carouselTrack');
     const data = parseScriptInput();
+
     if (!data) {
       track.innerHTML = `<div class="text-red-400 p-8 text-sm">Errore nel JSON. Controlla virgole, virgolette e parentesi.</div>`;
       return;
     }
+
     if (!data.cover || !Array.isArray(data.slides) || !data.cta) {
       track.innerHTML = `<div class="text-red-400 p-8 text-sm">Struttura JSON non valida. Servono cover, slides e cta.</div>`;
       return;
     }
+
     const fgImage = uploadedImageBase64;
     const scale = document.getElementById('imageScale').value;
     const yPos = document.getElementById('imageY').value;
     const titleFormatted = formatCoverTitle(data.cover.title);
+
     let html = '';
+
     html += `
       <div class="slide slide-cover brand-bg">
         <div class="cover-card"></div>
+
         <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
+
         <div class="photo-clip">
           <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; bottom:${yPos}px;">
         </div>
+
         <div id="coverGrad" class="cover-grad"></div>
+
         <div id="annLeft" class="cover-ann" style="top:${annPositions.left.y}px; left:${annPositions.left.x}px;">
-          <span style="transform:rotate(-6deg);">${formatMultiline(data.cover.leftAnnotation)}</span>
+          <span>${formatMultiline(data.cover.leftAnnotation)}</span>
           <svg width="34" height="34" viewBox="0 0 60 60" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:6px; margin-left:14px; transform:rotate(10deg); overflow:visible;">
             <path d="M 12 8 C 16 26 27 40 45 48" />
             <path d="M 31 51 L 45 48 L 40 34" />
           </svg>
         </div>
+
         <div id="annRight" class="cover-ann" style="top:${annPositions.right.y}px; left:${annPositions.right.x}px;">
           <svg width="34" height="34" viewBox="0 0 60 60" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px; margin-right:14px; transform:rotate(-10deg); overflow:visible;">
             <path d="M 48 8 C 44 26 33 40 15 48" />
             <path d="M 29 51 L 15 48 L 20 34" />
           </svg>
-          <span style="transform:rotate(6deg);">${formatMultiline(data.cover.rightAnnotation)}</span>
+          <span>${formatMultiline(data.cover.rightAnnotation)}</span>
         </div>
+
         <div class="cover-title">
           <p class="uppercase font-bold mb-3" style="font-size:0.62rem; letter-spacing:0.18em; color:rgba(255,255,255,0.82);">${escapeHtml(data.cover.subtitle)}</p>
           <h2 class="title-text">${titleFormatted}</h2>
@@ -683,8 +822,10 @@
           </svg>
         </div>
       </div>`;
+
     data.slides.forEach((slide, index) => {
       const cleanTitle = cleanSlideTitle(slide.title);
+
       html += `
         <div class="slide brand-bg flex flex-col items-center text-center">
           <div class="body-content">
@@ -698,6 +839,7 @@
           </div>
         </div>`;
     });
+
     html += `
       <div class="slide brand-bg flex flex-col items-center text-center">
         <div class="cta-content">
@@ -710,40 +852,54 @@
           <div class="logo-handle">Davide di Leo</div>
         </div>
       </div>`;
+
     track.innerHTML = html;
+
     applyColors();
     updateImageLive();
     updateGradientLive();
     initAnnDrag();
     applyAnnStyle();
   }
+
   function applyColors() {
     const bgColor = document.getElementById('bgColor').value;
     const logoColor = document.getElementById('logoColorSelect') ? document.getElementById('logoColorSelect').value : '#0a0a0a';
+
     document.getElementById('hexValue').textContent = bgColor;
+
     document.querySelectorAll('.brand-text').forEach(el => {
       el.style.color = bgColor;
     });
+
     document.querySelectorAll('.brand-bg').forEach(el => {
       el.style.backgroundColor = bgColor;
     });
+
     document.querySelectorAll('.cover-logo').forEach(el => {
       el.style.color = logoColor;
     });
   }
+
   async function downloadAllSlidesAsZip() {
     const btn = document.getElementById('downloadBtn');
     const originalText = btn.innerHTML;
+
     btn.innerHTML = "Esportazione in corso…";
     btn.disabled = true;
+
     const zip = new JSZip();
     const slides = document.querySelectorAll('.slide');
     const bgColor = document.getElementById('bgColor').value;
+
     try {
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
-      await new Promise(r => setTimeout(r, 250));
+
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 800));
+
       for (let i = 0; i < slides.length; i++) {
         const canvas = await html2canvas(slides[i], {
           scale: 4,
@@ -755,14 +911,19 @@
           removeContainer: true,
           foreignObjectRendering: false
         });
+
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
         const name = i === 0 ? '01-cover.png'
           : i === slides.length - 1 ? String(i + 1).padStart(2, '0') + '-cta.png'
           : String(i + 1).padStart(2, '0') + '-slide.png';
+
         zip.file(name, blob);
       }
+
       const content = await zip.generateAsync({ type: 'blob' });
       saveAs(content, 'davidedileo-carousel.zip');
+
     } catch (error) {
       console.error(error);
       alert("Errore esportazione. Se usi immagini da URL esterni, caricale dal tuo computer.");
