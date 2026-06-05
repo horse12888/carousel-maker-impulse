@@ -112,13 +112,13 @@
 
   .photo-clip {
     position: absolute;
-    left: 18px;
-    right: 18px;
+    left: 0;
+    right: 0;
     top: 0;
-    bottom: 0;
+    bottom: -40px;
     z-index: 5;
     pointer-events: none;
-    overflow: hidden;
+    overflow: visible;
   }
 
   #heroImage {
@@ -128,6 +128,7 @@
     transform: translateX(-50%);
     display: block;
     width: 92%;
+    max-width: calc(100% - 36px);
     height: auto;
     pointer-events: none;
     image-rendering: auto;
