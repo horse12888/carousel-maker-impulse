@@ -1,818 +1,673 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Davide Di Leo - Carousel Generator 3D</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Davide Di Leo · Carousel Maker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+  @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  * { box-sizing: border-box; }
+  body { font-family: 'Hanken Grotesk', sans-serif; background-color: #0a0a0a; color: white; }
+  img { image-rendering: auto; -webkit-font-smoothing: antialiased; backface-visibility: hidden; }
 
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
+  .carousel-track {
+    display: flex; gap: 40px; overflow-x: auto; padding: 40px;
+    scroll-snap-type: x mandatory; align-items: center; height: 100%;
+  }
+  .carousel-track::-webkit-scrollbar { height: 14px; }
+  .carousel-track::-webkit-scrollbar-track { background: #1a1a1a; margin: 0 40px; border-radius: 8px; }
+  .carousel-track::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; border: 4px solid #1a1a1a; }
+  .carousel-track::-webkit-scrollbar-thumb:hover { background: #555; }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  .slide {
+    width: 380px; height: 475px; flex-shrink: 0; border-radius: 14px;
+    position: relative; padding: 34px 34px; scroll-snap-align: center;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45); display: flex; flex-direction: column;
+    justify-content: flex-start; overflow: hidden; transform: translateZ(0);
+  }
 
-    <style>
-        @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
+  .slide-cover { overflow: hidden !important; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-        }
+  .cover-logo {
+    position: absolute; top: 22px; left: 0; right: 0; text-align: center; z-index: 6;
+    font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; text-transform: uppercase;
+    color: #0a0a0a; font-size: 4.4rem; line-height: 1; letter-spacing: -3px;
+    white-space: nowrap;
+  }
 
-        body {
-            font-family: 'Hanken Grotesk', sans-serif;
-            background-color: #0a0a0a;
-            color: white;
-        }
+  .cover-card {
+    position: absolute; top: 134px; left: 18px; right: 18px; bottom: -16px;
+    border-radius: 22px 22px 0 0; overflow: hidden; z-index: 1;
+    background-color: #5f9298; background-size: 100% 100%; background-repeat: no-repeat;
+  }
 
-        img {
-            image-rendering: auto;
-            -webkit-font-smoothing: antialiased;
-            backface-visibility: hidden;
-        }
+  .cover-photo {
+    position: absolute; left: 18px; right: 18px; top: 112px; bottom: 0;
+    z-index: 2; pointer-events: none; overflow: visible;
+    border-radius: 22px 22px 0 0;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
 
-        #heroImage {
-            image-rendering: auto;
-            filter: none;
-            will-change: transform;
-        }
+  #heroImage {
+    display: block; height: auto; width: 92%;
+  }
 
-        .carousel-track {
-            display: flex;
-            gap: 40px;
-            overflow-x: auto;
-            padding: 40px;
-            scroll-snap-type: x mandatory;
-            align-items: center;
-            height: 100%;
-        }
+  .cover-grad {
+    position: absolute; left: 18px; right: 18px; top: 0; bottom: 0;
+    pointer-events: none; z-index: 3; background-size: 100% 100%; background-repeat: no-repeat;
+  }
 
-        .carousel-track::-webkit-scrollbar {
-            height: 16px;
-        }
+  .cover-ann {
+    position: absolute; z-index: 4; display: flex; flex-direction: column; align-items: center;
+    cursor: grab; user-select: none;
+  }
+  .cover-ann:active { cursor: grabbing; }
+  .cover-ann span {
+    font-weight: 700; font-size: 0.98rem; line-height: 1;
+    text-align: center; font-family: 'Open Sauce One', 'Hanken Grotesk', sans-serif;
+  }
 
-        .carousel-track::-webkit-scrollbar-track {
-            background: #1a1a1a;
-            margin: 0 40px;
-            border-radius: 8px;
-        }
+  .cover-title {
+    position: absolute; left: 18px; right: 18px; bottom: 26px; z-index: 5;
+    text-align: center; display: flex; flex-direction: column; align-items: center;
+  }
 
-        .carousel-track::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 8px;
-            border: 4px solid #1a1a1a;
-        }
+  .title-text {
+    font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; text-transform: uppercase;
+    line-height: 1.02; letter-spacing: -1px; color: #fff; font-size: 1.82rem;
+  }
 
-        .carousel-track::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+  .body-content {
+    width: 100%; display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: center;
+    padding-top: 4px;
+  }
 
-        .slide {
-            width: 380px;
-            height: 475px;
-            flex-shrink: 0;
-            border-radius: 12px;
-            position: relative;
-            padding: 42px 34px;
-            scroll-snap-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow: hidden;
-            transform: translateZ(0);
-        }
+  .step-number {
+    font-family: 'Caveat', cursive; font-size: 2.0rem; font-weight: 700;
+    font-style: italic; line-height: 1; margin-bottom: 10px; color: #ffffff;
+  }
 
-        .slide-cover {
-            overflow: hidden !important;
-            padding: 0;
-            align-items: center;
-        }
+  .body-title {
+    font-weight: 900; font-size: 2.0rem; margin-bottom: 12px;
+    line-height: 1.06; letter-spacing: -0.5px; max-width: 330px; color: #ffffff;
+  }
 
-        .cover-logo {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #0a0a0a;
-            font-size: 5.35rem;
-            line-height: 0.82;
-            letter-spacing: -6px;
-            transform: scaleX(1.03);
-            white-space: nowrap;
-            margin-top: 18px;
-            margin-bottom: -2px;
-            position: relative;
-            z-index: 5;
-        }
+  .body-text {
+    font-weight: 600; font-size: 0.97rem; line-height: 1.48;
+    padding: 0 6px; max-width: 318px; color: rgba(255,255,255,0.88);
+  }
 
-        .cover-stage {
-            width: 340px;
-            height: 372px;
-            margin: 0 auto 0 auto;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            overflow: visible;
-            transform: translateY(0px);
-            isolation: isolate;
-        }
+  .logo-footer {
+    width: 100%; text-align: center;
+    display: flex; flex-direction: column; gap: 3px;
+    margin-top: 16px; padding-bottom: 6px;
+  }
 
-        .cover-panel {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 34px;
-            bottom: -44px;
-            border-radius: 22px 22px 0 0;
-            overflow: hidden;
-            z-index: 10;
-            background:
-                radial-gradient(circle at 32% 8%, rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.18) 32%, rgba(255,255,255,0) 62%),
-                linear-gradient(180deg, #d8e8e4 0%, #b8d7d2 28%, #5b8f96 64%, #0a0f10 100%);
-        }
+  .logo-name {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 900; font-size: 1.1rem; letter-spacing: 0.14em;
+    text-transform: uppercase; line-height: 1; color: #ffffff;
+  }
 
-        .cover-panel::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            opacity: 0.14;
-            background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px),
-                linear-gradient(180deg, rgba(0,0,0,0.10) 1px, transparent 1px);
-            background-size: 18px 18px;
-            mix-blend-mode: overlay;
-            pointer-events: none;
-        }
+  .logo-handle {
+    font-weight: 500; font-size: 0.68rem; line-height: 1;
+    color: rgba(255,255,255,0.65); letter-spacing: 0.04em;
+  }
 
-        .cover-gradient {
-            position: absolute;
-            left: 0;
-            bottom: -44px;
-            width: 100%;
-            pointer-events: none;
-        }
+  .cta-content {
+    width: 100%; display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: center; padding-top: 4px;
+  }
 
-        .title-text {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            line-height: 1;
-            letter-spacing: -1px;
-        }
+  .cta-top {
+    font-weight: 600; font-size: 0.88rem; line-height: 1.45;
+    color: rgba(255,255,255,0.80); max-width: 310px; margin-bottom: 18px;
+  }
 
-        .body-content {
-            width: 100%;
-            min-height: 355px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-bottom: 45px;
-        }
+  .cta-main {
+    font-weight: 900; font-size: 2.3rem; text-transform: uppercase;
+    line-height: 1.03; letter-spacing: -0.5px; max-width: 340px;
+    margin-bottom: 18px; color: #ffffff;
+  }
 
-        .step-number {
-            font-family: 'Caveat', cursive;
-            font-size: 2.45rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 12px;
-        }
+  .cta-bottom {
+    font-weight: 600; font-size: 0.95rem; line-height: 1.48;
+    color: rgba(255,255,255,0.82); max-width: 316px; white-space: pre-line;
+  }
 
-        .body-title {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            font-size: 1.68rem;
-            margin-bottom: 22px;
-            line-height: 1.08;
-            letter-spacing: -0.5px;
-            max-width: 310px;
-        }
-
-        .body-text {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 0.92rem;
-            line-height: 1.45;
-            padding: 0 4px;
-            max-width: 305px;
-        }
-
-        .logo-footer {
-            position: absolute;
-            bottom: 28px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .logo-name {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            font-size: 1.25rem;
-            letter-spacing: -0.5px;
-            line-height: 1;
-            color: #000000;
-        }
-
-        .logo-handle {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 0.8rem;
-            line-height: 1;
-            color: #000000;
-        }
-
-        .cta-content {
-            width: 100%;
-            min-height: 355px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-bottom: 45px;
-        }
-
-        .cta-top {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            font-size: 0.72rem;
-            line-height: 1.45;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            color: #0a0a0a;
-            max-width: 310px;
-            margin-bottom: 28px;
-        }
-
-        .cta-main {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 900;
-            font-size: 2.32rem;
-            text-transform: uppercase;
-            line-height: 1.03;
-            letter-spacing: -1px;
-            color: #0a0a0a;
-            max-width: 330px;
-            margin-bottom: 26px;
-        }
-
-        .cta-bottom {
-            font-family: 'Hanken Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 0.92rem;
-            line-height: 1.42;
-            color: #ffffff;
-            max-width: 310px;
-            white-space: pre-line;
-        }
-    </style>
+  input[type="range"] { accent-color: #266e8d; }
+</style>
 </head>
 
 <body class="flex h-screen w-full overflow-hidden bg-[#0a0a0a] text-white">
 
-    <div class="w-[360px] flex-shrink-0 bg-gray-900 p-6 overflow-y-auto border-r border-gray-800 z-20 flex flex-col">
-        <h2 class="text-xl font-bold mb-6 text-white">⚙️ Pannello Generatore 3D</h2>
+  <div class="w-[360px] flex-shrink-0 bg-gray-900 p-6 overflow-y-auto border-r border-gray-800 z-20 flex flex-col">
+    <h2 class="text-lg font-bold mb-1 text-white">Carousel Maker</h2>
+    <p class="text-[11px] text-gray-500 mb-5">Incolla lo script JSON, carica la foto, esporta in PNG.</p>
 
-        <div class="space-y-4 flex-1">
-            <div>
-                <label class="block text-sm font-medium mb-1 text-gray-300">Colore Brand</label>
-                <div class="flex items-center gap-3">
-                    <input type="color" id="bgColor" value="#276f8f" class="w-10 h-10 rounded cursor-pointer bg-gray-800 border-none p-1">
-                    <span id="hexValue" class="text-sm font-mono text-gray-400">#276f8f</span>
-                </div>
-            </div>
+    <div class="space-y-4 flex-1">
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Colore Brand</label>
+        <div class="flex items-center gap-3">
+          <input type="color" id="bgColor" value="#266e8d" class="w-10 h-10 rounded cursor-pointer bg-gray-800 border-none p-1" />
+          <span id="hexValue" class="text-sm font-mono text-gray-400">#266e8d</span>
+        </div>
+      </div>
 
-            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <label class="block text-sm font-medium mb-2 text-gray-300">1. Sfondo interno card</label>
-                <p class="text-[10px] text-gray-400 mb-2">Sfondo interno generato in CSS, più chiaro e con texture leggera.</p>
-                <input type="text" id="bgImage" value="" class="w-full bg-gray-900 text-gray-400 border border-gray-600 rounded p-2 text-[10px] mb-1" placeholder="Opzionale: URL immagine sfondo" oninput="generateFromScript()">
-            </div>
+      <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+        <label class="block text-sm font-medium mb-2 text-gray-300">1 · Soggetto PNG scontornato</label>
+        <p class="text-[10px] text-gray-400 mb-2">Carica un PNG trasparente ad alta risoluzione. JPEG o screenshot non vengono scontornati.</p>
 
-            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <label class="block text-sm font-medium mb-1 text-gray-300">2. Soggetto in 3D</label>
-                <p class="text-[10px] text-gray-400 mb-2">Carica una foto scontornata, meglio PNG ad alta risoluzione.</p>
-
-                <div class="relative">
-                    <input type="file" id="localImageInput" accept="image/png, image/jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                    <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
-                        Carica PNG Scontornato
-                    </button>
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-gray-700">
-                    <div class="mb-3">
-                        <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Dimensione Soggetto <span id="scaleVal" class="text-blue-400">96%</span>
-                        </label>
-                        <input type="range" id="imageScale" min="60" max="150" value="96" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-gray-300 flex justify-between">
-                            Sposta in Alto/Basso <span id="yVal" class="text-blue-400">4%</span>
-                        </label>
-                        <input type="range" id="imageY" min="-10" max="100" value="4" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()">
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <label class="block text-sm font-medium mb-2 text-gray-300">3. Gradiente Cover</label>
-
-                <div class="mb-3">
-                    <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Inizio Gradiente <span id="gradientStartVal" class="text-blue-400">62%</span>
-                    </label>
-                    <input type="range" id="gradientStart" min="35" max="95" value="62" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
-                </div>
-
-                <div class="mb-3">
-                    <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Intensità Gradiente <span id="gradientIntensityVal" class="text-blue-400">72%</span>
-                    </label>
-                    <input type="range" id="gradientIntensity" min="20" max="100" value="72" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold text-gray-300 flex justify-between">
-                        Nero Pieno <span id="blackBaseVal" class="text-blue-400">44%</span>
-                    </label>
-                    <input type="range" id="blackBase" min="20" max="85" value="44" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1 text-yellow-400">Preset CTA Finale</label>
-                <select id="ctaPreset" onchange="applyCtaPreset()" class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm">
-                    <option value="preset3">Lead Magnet: Guida in DM</option>
-                    <option value="preset1">Servizio: Diagnosi Gratuita</option>
-                    <option value="preset2">Servizio: IMPULSE Assessment</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1 text-gray-300">Script Contenuto JSON</label>
-                <textarea id="scriptInput" rows="6" class="w-full bg-gray-900 text-green-400 border border-gray-700 rounded p-2 text-[11px] font-mono"></textarea>
-            </div>
-
-            <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">
-                Genera Anteprima 3D
-            </button>
+        <div class="relative">
+          <input type="file" id="localImageInput" accept="image/png, image/jpeg, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded transition-colors">Carica foto</button>
         </div>
 
-        <div class="mt-4 pt-4 border-t border-gray-800">
-            <button id="downloadBtn" onclick="downloadAllSlidesAsZip()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center gap-2">
-                Esporta ZIP Massima Qualità
-            </button>
+        <div id="imgPreviewWrap" class="mt-3 hidden">
+          <div class="text-[10px] text-gray-400 mb-1 flex justify-between">
+            <span>Anteprima file</span><span id="imgPreviewMeta" class="text-gray-500"></span>
+          </div>
+          <div class="rounded-md border border-gray-700 overflow-hidden" style="background-image: linear-gradient(45deg,#374151 25%,transparent 25%),linear-gradient(-45deg,#374151 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#374151 75%),linear-gradient(-45deg,transparent 75%,#374151 75%); background-size:14px 14px; background-position:0 0,0 7px,7px -7px,-7px 0;">
+            <img id="imgPreview" class="w-full h-28 object-contain" alt="preview" />
+          </div>
+          <p id="imgWarn" class="text-[10px] text-amber-400 mt-1 hidden">Sembra avere lo sfondo pieno: per il look 3D serve un PNG scontornato con sfondo trasparente.</p>
         </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-700">
+          <label class="text-xs font-bold text-gray-300 flex justify-between">Dimensione <span id="scaleVal" class="text-blue-400">92%</span></label>
+          <input type="range" id="imageScale" min="55" max="125" value="92" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
+
+          <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Posizione verticale <span id="yVal" class="text-blue-400">-10px</span></label>
+          <input type="range" id="imageY" min="-80" max="40" value="-10" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
+        </div>
+      </div>
+
+      <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+        <label class="block text-sm font-medium mb-2 text-gray-300">2 · Gradiente Cover</label>
+
+        <label class="text-xs font-bold text-gray-300 flex justify-between">Altezza gradiente <span id="gradientStartVal" class="text-blue-400">58%</span></label>
+        <input type="range" id="gradientStart" min="35" max="95" value="58" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
+
+        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Intensità <span id="gradientIntensityVal" class="text-blue-400">78%</span></label>
+        <input type="range" id="gradientIntensity" min="20" max="100" value="78" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
+
+        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Nero pieno <span id="blackBaseVal" class="text-blue-400">38%</span></label>
+        <input type="range" id="blackBase" min="20" max="85" value="38" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
+      </div>
+
+      <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+        <label class="block text-sm font-medium mb-2 text-gray-300">3 · Annotazioni cover</label>
+        <p class="text-[10px] text-gray-400 mb-3">Trascina le etichette direttamente sulla foto.</p>
+
+        <label class="text-xs font-bold text-gray-300 mb-2 block">Colore testo &amp; frecce</label>
+        <div class="flex gap-2 items-center">
+          <button onclick="setAnnColor('#0a0a0a')" class="w-8 h-8 rounded-full border-2 border-gray-500" style="background:#0a0a0a;" title="Nero"></button>
+          <button onclick="setAnnColor('#ffffff')" class="w-8 h-8 rounded-full border-2 border-gray-500" style="background:#ffffff;" title="Bianco"></button>
+          <input type="color" id="annColorPicker" value="#0a0a0a" class="w-8 h-8 rounded cursor-pointer bg-gray-900 border-none p-0" oninput="setAnnColor(this.value)" title="Colore personalizzato" />
+          <span id="annColorHex" class="text-[10px] font-mono text-gray-400">#0a0a0a</span>
+        </div>
+
+        <button onclick="resetAnnPositions()" class="mt-3 w-full text-[10px] text-gray-400 border border-gray-700 rounded py-1 hover:bg-gray-700 transition-colors">↺ Ripristina posizione default</button>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1 text-yellow-400">Preset CTA finale</label>
+        <select id="ctaPreset" onchange="applyCtaPreset()" class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm">
+          <option value="preset3">Lead Magnet · Commenta una parola</option>
+          <option value="preset1">Servizio · Diagnosi gratuita</option>
+          <option value="preset2">Servizio · IMPULSE Assessment</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Script contenuto JSON</label>
+        <textarea id="scriptInput" rows="7" class="w-full bg-gray-900 text-green-400 border border-gray-700 rounded p-2 text-[11px] font-mono"></textarea>
+      </div>
+
+      <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">Genera anteprima</button>
     </div>
 
-    <div class="flex-1 flex flex-col h-full min-w-0 relative">
-        <div class="p-8 pb-0 flex-shrink-0">
-            <h1 class="text-3xl font-bold text-white">Anteprima Layout</h1>
-        </div>
-
-        <div class="flex-1 overflow-hidden w-full relative">
-            <div class="carousel-track" id="carouselTrack"></div>
-        </div>
+    <div class="mt-4 pt-4 border-t border-gray-800">
+      <button id="downloadBtn" onclick="downloadAllSlidesAsZip()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-all">Esporta ZIP PNG · 1520×1900</button>
     </div>
+  </div>
 
-    <script>
-        const defaultScript = {
-            "cover": {
-                "magazineTitle": "IMPULSE",
-                "leftAnnotation": "Michael\nBaum",
-                "rightAnnotation": "Co-founder\nSplunk",
-                "title": "DA STEVE JOBS A\n[BRAND]$28 MILIARDI[/BRAND]\nCON SPLUNK",
-                "subtitle": "IL PLAYBOOK DI MICHAEL BAUM"
-            },
-            "slides": [
-                {
-                    "title": "1. Un evento può cambiare una traiettoria.",
-                    "text": "Michael Baum studiava a Drexel quando Steve Jobs arrivò nel campus per la partnership Apple. Quell'esposizione al personal computing lo spinse verso il software. Vide prima degli altri dove stava andando il mercato."
-                },
-                {
-                    "title": "2. Il primo pattern: problemi complessi.",
-                    "text": "Baum non partì da prodotti carini. Partì da problemi difficili: dati, finanza, sistemi, caos operativo. Una delle sue prime startup lavorava su modelli per analizzare trend di mercato e fu acquisita da Reuters."
-                },
-                {
-                    "title": "3. Splunk nasce da una frustrazione enorme.",
-                    "text": "Le aziende generavano montagne di log, errori, alert e segnali tecnici. Nessuno riusciva a cercarli e usarli velocemente. Splunk trasformò quel caos in visibilità operativa."
-                },
-                {
-                    "title": "4. La vera scala arriva dove c'è budget.",
-                    "text": "Splunk diventò sempre più rilevante quando dati, cybersecurity e osservabilità diventarono priorità da boardroom. Quando il problema costa milioni in downtime, rischio e compliance, il software diventa infrastruttura."
-                },
-                {
-                    "title": "5. L'asset continua anche quando esci.",
-                    "text": "Baum lasciò il ruolo operativo anni prima dell'acquisizione Cisco. Ma l'azienda continuò a crescere perché aveva costruito qualcosa con mercato, tecnologia e posizione strategica. Questa è la differenza tra vendere lavoro e costruire equity."
-                },
-                {
-                    "title": "6. La lezione per ogni founder.",
-                    "text": "Cerca il punto in cui un cambiamento tecnologico incontra un problema costoso e ricorrente. Poi costruisci un sistema che diventa sempre più difficile da sostituire."
-                }
-            ],
-            "cta": {
-                "topText": "Vuoi capire se il tuo business sta costruendo valore reale?",
-                "mainText": "Fai il\nBUSINESS ASSESSMENT",
-                "bottomText": "Diagnosi gratuita in 4 minuti per scoprire dove stai perdendo crescita, margine e enterprise value."
-            }
-        };
+  <div class="flex-1 flex flex-col h-full min-w-0 relative">
+    <div class="px-8 pt-7 pb-0 flex-shrink-0">
+      <h1 class="text-2xl font-bold text-white">Anteprima</h1>
+    </div>
+    <div class="flex-1 overflow-hidden w-full relative">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+  </div>
 
-        const ctaPresets = {
-            "preset1": {
-                "topText": "Diagnosi in 4 minuti",
-                "mainText": "SCOPRI IL\nVINCOLO",
-                "bottomText": "che sta limitando crescita, margini o scalabilità.\n\nLink in bio."
-            },
-            "preset2": {
-                "topText": "Pronto per il prossimo salto?",
-                "mainText": "IMPULSE\nASSESSMENT",
-                "bottomText": "In 4 minuti ottieni una diagnosi gratuita su margini, acquisizione, operations, asset e readiness.\n\nFai il test dal link in bio."
-            },
-            "preset3": {
-                "topText": "Vuoi altri casi studio?",
-                "mainText": "Commenta\nBUSINESS",
-                "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM."
-            }
-        };
+  <script>
+    let annColor = '#0a0a0a';
+    let annPositions = { left: { x: 8, y: 150 }, right: { x: 260, y: 166 } };
 
-        let uploadedImageBase64 = "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png";
+    function setAnnColor(color) {
+      annColor = color;
+      const picker = document.getElementById('annColorPicker');
+      if (picker) picker.value = (color.length === 7 && color[0] === '#') ? color : '#0a0a0a';
+      const hex = document.getElementById('annColorHex');
+      if (hex) hex.textContent = color;
+      applyAnnStyle();
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('scriptInput').value = JSON.stringify(defaultScript, null, 2);
-            generateFromScript();
+    function applyAnnStyle() {
+      ['annLeft', 'annRight'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.querySelectorAll('span').forEach(s => s.style.color = annColor);
+        el.querySelectorAll('svg').forEach(s => s.setAttribute('stroke', annColor));
+      });
+    }
+
+    function initAnnDrag() {
+      const slide = document.querySelector('.slide-cover');
+      if (!slide) return;
+
+      document.querySelectorAll('.cover-ann').forEach(el => {
+        el.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+
+          const startX = e.clientX - el.offsetLeft;
+          const startY = e.clientY - el.offsetTop;
+          const key = el.id === 'annLeft' ? 'left' : 'right';
+
+          const onMove = (e) => {
+            const x = Math.max(0, Math.min(e.clientX - startX, slide.offsetWidth - el.offsetWidth));
+            const y = Math.max(0, Math.min(e.clientY - startY, slide.offsetHeight - el.offsetHeight));
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            el.style.right = 'auto';
+            annPositions[key] = { x, y };
+          };
+
+          const onUp = () => {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+          };
+
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
         });
+      });
+    }
 
-        document.getElementById('localImageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
+    function resetAnnPositions() {
+      annPositions = { left: { x: 8, y: 150 }, right: { x: 260, y: 166 } };
+      generateFromScript();
+    }
 
-            if (file) {
-                const reader = new FileReader();
+    const defaultScript = {
+      "cover": {
+        "magazineTitle": "IMPULSE",
+        "leftAnnotation": "Michael\nBaum",
+        "rightAnnotation": "Co-founder\nSplunk",
+        "title": "DA STEVE JOBS A\n[BRAND]$28 MILIARDI[/BRAND]\nCON SPLUNK",
+        "subtitle": "IL PLAYBOOK DI MICHAEL BAUM"
+      },
+      "slides": [
+        { "title": "1. Un evento può cambiare una traiettoria.", "text": "Michael Baum studiava a Drexel quando Steve Jobs arrivò nel campus per la partnership Apple. Quell'esposizione al personal computing lo spinse verso il software. Vide prima degli altri dove stava andando il mercato." },
+        { "title": "2. Il primo pattern: problemi complessi.", "text": "Baum non partì da prodotti carini. Partì da problemi difficili: dati, finanza, sistemi, caos operativo. Una delle sue prime startup analizzava trend di mercato e fu acquisita da Reuters." },
+        { "title": "3. Splunk nasce da una frustrazione enorme.", "text": "Le aziende generavano montagne di log, errori e alert. Nessuno riusciva a cercarli e usarli velocemente. Splunk trasformò quel caos in visibilità operativa." },
+        { "title": "4. La vera scala arriva dove c'è budget.", "text": "Splunk diventò rilevante quando dati, cybersecurity e osservabilità diventarono priorità da boardroom. Quando il problema costa milioni in downtime e rischio, il software diventa infrastruttura." },
+        { "title": "5. L'asset continua anche quando esci.", "text": "Baum lasciò il ruolo operativo anni prima dell'acquisizione Cisco. Ma l'azienda continuò a crescere: mercato, tecnologia e posizione strategica. È la differenza tra vendere lavoro e costruire equity." },
+        { "title": "6. La lezione per ogni founder.", "text": "Cerca il punto in cui un cambiamento tecnologico incontra un problema costoso e ricorrente. Poi costruisci un sistema che diventa sempre più difficile da sostituire." }
+      ],
+      "cta": {
+        "topText": "Vuoi capire se il tuo business sta costruendo valore reale?",
+        "mainText": "Fai il\nBUSINESS ASSESSMENT",
+        "bottomText": "Diagnosi gratuita in 4 minuti per scoprire dove stai perdendo crescita, margine e enterprise value."
+      }
+    };
 
-                reader.onload = function(event) {
-                    uploadedImageBase64 = event.target.result;
-                    generateFromScript();
-                };
+    const ctaPresets = {
+      "preset1": {
+        "topText": "Diagnosi in 4 minuti",
+        "mainText": "SCOPRI IL\nVINCOLO",
+        "bottomText": "che sta limitando crescita, margini o scalabilità.\n\nLink in bio."
+      },
+      "preset2": {
+        "topText": "Pronto per il prossimo salto?",
+        "mainText": "IMPULSE\nASSESSMENT",
+        "bottomText": "In 4 minuti ottieni una diagnosi gratuita su margini, acquisizione, operations e readiness.\n\nFai il test dal link in bio."
+      },
+      "preset3": {
+        "topText": "Vuoi altri casi studio?",
+        "mainText": "Commenta\nBUSINESS",
+        "bottomText": "e ti invierò la mia guida gratuita per founder direttamente in DM."
+      }
+    };
 
-                reader.readAsDataURL(file);
-            }
-        });
+    let uploadedImageBase64 = "data:image/svg+xml;utf8," + encodeURIComponent(
+      "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='360'><rect width='300' height='360' fill='none'/><text x='150' y='185' font-family='sans-serif' font-size='15' fill='%23ffffff' opacity='0.55' text-anchor='middle'>Carica una foto PNG</text></svg>"
+    );
 
-        document.getElementById('bgColor').addEventListener('input', applyColors);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('scriptInput').value = JSON.stringify(defaultScript, null, 2);
+      generateFromScript();
+    });
 
-        function escapeHtml(value) {
-            if (value === undefined || value === null) return '';
+    document.getElementById('localImageInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-            return String(value)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedImageBase64 = event.target.result;
+        showImagePreview(event.target.result, file);
+        generateFromScript();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('bgColor').addEventListener('input', applyColors);
+
+    function showImagePreview(dataUrl, file) {
+      const wrap = document.getElementById('imgPreviewWrap');
+      const img = document.getElementById('imgPreview');
+      const meta = document.getElementById('imgPreviewMeta');
+      const warn = document.getElementById('imgWarn');
+
+      wrap.classList.remove('hidden');
+      img.src = dataUrl;
+
+      const isPng = /image\/png/i.test(file.type);
+      meta.textContent = (file.type.split('/')[1] || '').toUpperCase() + ' · ' + Math.round(file.size / 1024) + ' KB';
+      warn.classList.toggle('hidden', isPng);
+    }
+
+    function escapeHtml(value) {
+      if (value === undefined || value === null) return '';
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatMultiline(value) {
+      return escapeHtml(value).replace(/\n/g, '<br>');
+    }
+
+    function formatCoverTitle(value) {
+      if (!value) return '';
+      return escapeHtml(value)
+        .replace(/\n/g, '<br>')
+        .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, '<span class="brand-text">$1</span>');
+    }
+
+    function cleanSlideTitle(title) {
+      if (!title) return '';
+      return String(title)
+        .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
+        .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
+        .trim();
+    }
+
+    function normalizeSmartQuotes(value) {
+      return value.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+    }
+
+    function parseScriptInput() {
+      try {
+        return JSON.parse(normalizeSmartQuotes(document.getElementById('scriptInput').value));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function applyCtaPreset() {
+      const data = parseScriptInput();
+      if (!data) {
+        alert("Errore nel JSON. Controlla virgole, virgolette e parentesi.");
+        return;
+      }
+
+      data.cta = ctaPresets[document.getElementById('ctaPreset').value];
+      document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
+      generateFromScript();
+    }
+
+    function updateImageLive() {
+      const scale = document.getElementById('imageScale').value;
+      const yPos = document.getElementById('imageY').value;
+
+      document.getElementById('scaleVal').innerText = scale + '%';
+      document.getElementById('yVal').innerText = yPos + 'px';
+
+      const heroImg = document.getElementById('heroImage');
+      if (heroImg) {
+        heroImg.style.width = scale + '%';
+        heroImg.style.height = 'auto';
+        heroImg.style.marginBottom = yPos + 'px';
+      }
+    }
+
+    function svgVGrad(stops) {
+      const s = stops.map(x => `<stop offset='${x.o}' stop-color='${x.c}'${x.op != null ? ` stop-opacity='${x.op}'` : ''}/>`).join('');
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='240' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>${s}</linearGradient></defs><rect width='4' height='240' fill='url(#g)'/></svg>`;
+      return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    }
+
+    function updateGradientLive() {
+      const gradientStart = document.getElementById('gradientStart').value;
+      const gradientIntensity = document.getElementById('gradientIntensity').value;
+      const blackBase = document.getElementById('blackBase').value;
+
+      document.getElementById('gradientStartVal').innerText = gradientStart + '%';
+      document.getElementById('gradientIntensityVal').innerText = gradientIntensity + '%';
+      document.getElementById('blackBaseVal').innerText = blackBase + '%';
+
+      const card = document.querySelector('.cover-card');
+      if (card) {
+        card.style.backgroundImage = svgVGrad([
+          { o: 0, c: '#d6e8e4' },
+          { o: 0.42, c: '#8fb1b3' },
+          { o: 1, c: '#0d1f28' }
+        ]);
+      }
+
+      const coverGrad = document.getElementById('coverGrad');
+      if (coverGrad) {
+        const k = gradientIntensity / 100;
+        const fadeTop = Math.max(0, 1 - gradientStart / 100);
+        const solidTop = Math.max(fadeTop + 0.04, 1 - blackBase / 100);
+
+        const stops = [
+          { o: 0, c: '#0a0a0a', op: 0 },
+          { o: +fadeTop.toFixed(4), c: '#0a0a0a', op: 0 }
+        ];
+
+        const N = 6;
+        for (let i = 1; i <= N; i++) {
+          const t = i / N;
+          const o = fadeTop + (solidTop - fadeTop) * t;
+          const op = k * Math.pow(t, 1.5);
+          stops.push({ o: +o.toFixed(4), c: '#0a0a0a', op: +op.toFixed(4) });
         }
 
-        function formatMultiline(value) {
-            return escapeHtml(value).replace(/\n/g, '<br>');
+        stops.push({ o: Math.min(0.9999, +solidTop.toFixed(4)), c: '#0a0a0a', op: +k.toFixed(4) });
+        stops.push({ o: 1, c: '#0a0a0a', op: +k.toFixed(4) });
+
+        coverGrad.style.backgroundImage = svgVGrad(stops);
+      }
+    }
+
+    function generateFromScript() {
+      const track = document.getElementById('carouselTrack');
+      const data = parseScriptInput();
+
+      if (!data) {
+        track.innerHTML = `<div class="text-red-400 p-8 text-sm">Errore nel JSON. Controlla virgole, virgolette e parentesi.</div>`;
+        return;
+      }
+
+      if (!data.cover || !Array.isArray(data.slides) || !data.cta) {
+        track.innerHTML = `<div class="text-red-400 p-8 text-sm">Struttura JSON non valida. Servono cover, slides e cta.</div>`;
+        return;
+      }
+
+      const fgImage = uploadedImageBase64;
+      const scale = document.getElementById('imageScale').value;
+      const yPos = document.getElementById('imageY').value;
+      const titleFormatted = formatCoverTitle(data.cover.title);
+
+      let html = '';
+
+      html += `
+        <div class="slide slide-cover brand-bg">
+          <div class="cover-card"></div>
+
+          <div class="cover-photo" id="heroWrap">
+            <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; margin-bottom:${yPos}px;">
+          </div>
+
+          <div id="coverGrad" class="cover-grad"></div>
+
+          <div id="annLeft" class="cover-ann" style="top:${annPositions.left.y}px; left:${annPositions.left.x}px;">
+            <span style="transform:rotate(-6deg);">${formatMultiline(data.cover.leftAnnotation)}</span>
+            <svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="margin-top:6px; margin-left:14px; transform:rotate(12deg);">
+              <path d="M 5 5 Q 15 20 35 30" /><path d="M 22 32 L 35 30 L 30 18" />
+            </svg>
+          </div>
+
+          <div id="annRight" class="cover-ann" style="top:${annPositions.right.y}px; left:${annPositions.right.x}px;">
+            <svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px; margin-right:14px; transform:rotate(-12deg);">
+              <path d="M 35 5 Q 25 20 5 30" /><path d="M 18 32 L 5 30 L 10 18" />
+            </svg>
+            <span style="transform:rotate(6deg);">${formatMultiline(data.cover.rightAnnotation)}</span>
+          </div>
+
+          <div class="cover-title">
+            <p class="uppercase font-bold mb-3" style="font-size:0.62rem; letter-spacing:0.18em; color:rgba(255,255,255,0.82);">${escapeHtml(data.cover.subtitle)}</p>
+            <h2 class="title-text">${titleFormatted}</h2>
+            <svg width="44" height="14" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="brand-text" style="margin-top:14px;">
+              <path d="M 0 10 Q 25 12 46 10 M 35 2 L 48 10 L 35 18" />
+            </svg>
+          </div>
+
+          <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
+        </div>`;
+
+      data.slides.forEach((slide, index) => {
+        const cleanTitle = cleanSlideTitle(slide.title);
+
+        html += `
+          <div class="slide brand-bg flex flex-col items-center text-center">
+            <div class="body-content">
+              <div class="step-number">#${index + 1}</div>
+              <h3 class="body-title">${escapeHtml(cleanTitle)}</h3>
+              <p class="body-text">${escapeHtml(slide.text)}</p>
+            </div>
+            <div class="logo-footer">
+              <div class="logo-name">IMPULSE</div>
+              <div class="logo-handle">Davide di Leo</div>
+            </div>
+          </div>`;
+      });
+
+      html += `
+        <div class="slide brand-bg flex flex-col items-center text-center">
+          <div class="cta-content">
+            <p class="cta-top">${escapeHtml(data.cta.topText)}</p>
+            <h3 class="cta-main">${formatMultiline(data.cta.mainText)}</h3>
+            <p class="cta-bottom">${escapeHtml(data.cta.bottomText)}</p>
+          </div>
+          <div class="logo-footer">
+            <div class="logo-name">IMPULSE</div>
+            <div class="logo-handle">Davide di Leo</div>
+          </div>
+        </div>`;
+
+      track.innerHTML = html;
+
+      applyColors();
+      updateImageLive();
+      updateGradientLive();
+      initAnnDrag();
+      applyAnnStyle();
+    }
+
+    function applyColors() {
+      const bgColor = document.getElementById('bgColor').value;
+      document.getElementById('hexValue').textContent = bgColor;
+
+      document.querySelectorAll('.brand-text').forEach(el => {
+        el.style.color = bgColor;
+      });
+
+      document.querySelectorAll('.brand-bg').forEach(el => {
+        el.style.backgroundColor = bgColor;
+      });
+
+      document.querySelectorAll('.brand-text-invert').forEach(el => {
+        el.style.color = '#0a0a0a';
+      });
+    }
+
+    async function downloadAllSlidesAsZip() {
+      const btn = document.getElementById('downloadBtn');
+      const originalText = btn.innerHTML;
+
+      btn.innerHTML = "Esportazione in corso…";
+      btn.disabled = true;
+
+      const zip = new JSZip();
+      const slides = document.querySelectorAll('.slide');
+      const bgColor = document.getElementById('bgColor').value;
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
         }
 
-        function formatCoverTitle(value) {
-            if (!value) return '';
+        await new Promise(r => setTimeout(r, 250));
 
-            const escaped = escapeHtml(value);
+        for (let i = 0; i < slides.length; i++) {
+          const canvas = await html2canvas(slides[i], {
+            scale: 4,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: bgColor,
+            logging: false,
+            imageTimeout: 0,
+            removeContainer: true,
+            foreignObjectRendering: false
+          });
 
-            return escaped
-                .replace(/\n/g, '<br>')
-                .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, '<span class="brand-text">$1</span>');
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+          const name = i === 0 ? '01-cover.png'
+            : i === slides.length - 1 ? String(i + 1).padStart(2, '0') + '-cta.png'
+            : String(i + 1).padStart(2, '0') + '-slide.png';
+
+          zip.file(name, blob);
         }
 
-        function cleanSlideTitle(title) {
-            if (!title) return '';
+        const content = await zip.generateAsync({ type: 'blob' });
+        saveAs(content, 'davidedileo-carousel.zip');
 
-            return String(title)
-                .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
-                .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
-                .trim();
-        }
-
-        function normalizeSmartQuotes(value) {
-            return value
-                .replace(/[“”]/g, '"')
-                .replace(/[‘’]/g, "'");
-        }
-
-        function parseScriptInput() {
-            const rawValue = document.getElementById('scriptInput').value;
-            const normalizedValue = normalizeSmartQuotes(rawValue);
-
-            try {
-                return JSON.parse(normalizedValue);
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function applyCtaPreset() {
-            const selectedPreset = document.getElementById('ctaPreset').value;
-            const data = parseScriptInput();
-
-            if (!data) {
-                alert("Errore nel JSON. Controlla virgole, virgolette e parentesi.");
-                return;
-            }
-
-            data.cta = ctaPresets[selectedPreset];
-
-            document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
-            generateFromScript();
-        }
-
-        function updateImageLive() {
-            const scale = document.getElementById('imageScale').value;
-            const yPos = document.getElementById('imageY').value;
-
-            document.getElementById('scaleVal').innerText = scale + '%';
-            document.getElementById('yVal').innerText = yPos + '%';
-
-            const heroImg = document.getElementById('heroImage');
-
-            if (heroImg) {
-                heroImg.style.width = '88%';
-                heroImg.style.height = 'auto';
-                heroImg.style.bottom = yPos + '%';
-                heroImg.style.transform = `translateX(-50%) scale(${scale / 100})`;
-                heroImg.style.transformOrigin = 'bottom center';
-            }
-        }
-
-        function updateGradientLive() {
-            const gradientStart = document.getElementById('gradientStart').value;
-            const gradientIntensity = document.getElementById('gradientIntensity').value;
-            const blackBase = document.getElementById('blackBase').value;
-
-            document.getElementById('gradientStartVal').innerText = gradientStart + '%';
-            document.getElementById('gradientIntensityVal').innerText = gradientIntensity + '%';
-            document.getElementById('blackBaseVal').innerText = blackBase + '%';
-
-            const mainGradient = document.getElementById('mainGradient');
-            const baseGradient = document.getElementById('baseGradient');
-
-            if (mainGradient && baseGradient) {
-                const intensity = gradientIntensity / 100;
-
-                mainGradient.style.height = gradientStart + '%';
-                mainGradient.style.background = `
-                    linear-gradient(
-                        to bottom,
-                        rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.04 * intensity}) 14%,
-                        rgba(10,10,10,${0.14 * intensity}) 30%,
-                        rgba(10,10,10,${0.34 * intensity}) 48%,
-                        rgba(10,10,10,${0.68 * intensity}) 70%,
-                        rgba(10,10,10,${0.92 * intensity}) 88%,
-                        rgba(10,10,10,${1 * intensity}) 100%
-                    )
-                `;
-
-                baseGradient.style.height = blackBase + '%';
-                baseGradient.style.background = `
-                    linear-gradient(
-                        to bottom,
-                        rgba(10,10,10,0) 0%,
-                        rgba(10,10,10,${0.34 * intensity}) 30%,
-                        rgba(10,10,10,${0.76 * intensity}) 62%,
-                        rgba(10,10,10,${1 * intensity}) 100%
-                    )
-                `;
-            }
-        }
-
-        function generateFromScript() {
-            const track = document.getElementById('carouselTrack');
-            const data = parseScriptInput();
-
-            if (!data) {
-                track.innerHTML = `
-                    <div class="text-red-400 p-8 text-sm">
-                        Errore nel JSON. Controlla virgole, virgolette e parentesi.
-                    </div>
-                `;
-                return;
-            }
-
-            if (!data.cover || !Array.isArray(data.slides) || !data.cta) {
-                track.innerHTML = `
-                    <div class="text-red-400 p-8 text-sm">
-                        Struttura JSON non valida. Servono cover, slides e cta.
-                    </div>
-                `;
-                return;
-            }
-
-            const bgImage = document.getElementById('bgImage').value;
-            const fgImage = uploadedImageBase64;
-            const scale = document.getElementById('imageScale').value;
-            const yPos = document.getElementById('imageY').value;
-
-            let htmlContent = '';
-
-            const titleFormatted = formatCoverTitle(data.cover.title);
-
-            const optionalBgImage = bgImage.trim()
-                ? `<div class="absolute inset-0" style="background-image: url('${escapeHtml(bgImage)}'); background-size: cover; background-position: center; opacity: 0.42; mix-blend-mode: multiply;"></div>`
-                : '';
-
-            htmlContent += `
-                <div class="slide slide-cover brand-bg text-center">
-
-                    <h1 class="cover-logo">
-                        ${escapeHtml(data.cover.magazineTitle)}
-                    </h1>
-
-                    <div class="cover-stage">
-
-                        <div class="cover-panel">
-                            ${optionalBgImage}
-                        </div>
-
-                        <img id="heroImage" src="${fgImage}"
-                             class="absolute left-1/2 z-20 pointer-events-none transition-all duration-75"
-                             decoding="sync"
-                             style="
-                                width: 88%;
-                                height: auto;
-                                max-height: none;
-                                bottom: ${yPos}%;
-                                transform: translateX(-50%) scale(${scale / 100});
-                                transform-origin: bottom center;
-                             ">
-
-                        <div id="mainGradient" class="cover-gradient h-[62%]" style="z-index: 30;"></div>
-
-                        <div id="baseGradient" class="cover-gradient h-[44%]" style="z-index: 31;"></div>
-
-                        <div class="absolute top-10 left-3 z-40 flex flex-col items-center">
-                            <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform -rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
-                                ${formatMultiline(data.cover.leftAnnotation)}
-                            </span>
-
-                            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mt-2 ml-4 transform rotate-12">
-                                <path d="M 5 5 Q 15 20 35 30" />
-                                <path d="M 22 32 L 35 30 L 30 18" />
-                            </svg>
-                        </div>
-
-                        <div class="absolute top-16 right-3 z-40 flex flex-col items-center">
-                            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="mb-2 mr-4 transform -rotate-12">
-                                <path d="M 35 5 Q 25 20 5 30" />
-                                <path d="M 18 32 L 5 30 L 10 18" />
-                            </svg>
-
-                            <span class="text-[#0a0a0a] font-bold text-[0.98rem] leading-none transform rotate-6 text-center" style="font-family: 'Open Sauce One', sans-serif;">
-                                ${formatMultiline(data.cover.rightAnnotation)}
-                            </span>
-                        </div>
-
-                        <div class="relative z-50 px-5 pb-5 w-full text-center flex flex-col items-center" style="transform: translateY(-8px);">
-                            <h2 class="title-text text-white mb-2" style="font-size: 1.96rem; line-height: 1.01;">
-                                ${titleFormatted}
-                            </h2>
-
-                            <p class="uppercase font-bold text-gray-300 mb-4 mt-2" style="font-family: 'Hanken Grotesk', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em;">
-                                ${escapeHtml(data.cover.subtitle)}
-                            </p>
-
-                            <svg width="45" height="15" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="brand-text">
-                                <path d="M 0 10 Q 25 12 46 10 M 35 2 L 48 10 L 35 18" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            data.slides.forEach((slide, index) => {
-                const cleanTitle = cleanSlideTitle(slide.title);
-
-                htmlContent += `
-                    <div class="slide brand-bg text-white flex flex-col items-center text-center">
-                        <div class="body-content">
-                            <div class="step-number text-white opacity-90">#${index + 1}</div>
-                            <h3 class="body-title">${escapeHtml(cleanTitle)}</h3>
-                            <p class="body-text">${escapeHtml(slide.text)}</p>
-                        </div>
-
-                        <div class="logo-footer">
-                            <div class="logo-name">Davide di Leo</div>
-                            <div class="logo-handle">@davidedileo.official</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            htmlContent += `
-                <div class="slide brand-bg text-white flex flex-col items-center text-center">
-                    <div class="cta-content">
-                        <p class="cta-top">${escapeHtml(data.cta.topText)}</p>
-                        <h3 class="cta-main brand-text-invert">${formatMultiline(data.cta.mainText)}</h3>
-                        <p class="cta-bottom">${escapeHtml(data.cta.bottomText)}</p>
-                    </div>
-
-                    <div class="logo-footer">
-                        <div class="logo-name">Davide di Leo</div>
-                        <div class="logo-handle">@davidedileo.official</div>
-                    </div>
-                </div>
-            `;
-
-            track.innerHTML = htmlContent;
-            applyColors();
-            updateImageLive();
-            updateGradientLive();
-        }
-
-        function applyColors() {
-            const bgColor = document.getElementById('bgColor').value;
-
-            document.getElementById('hexValue').textContent = bgColor;
-
-            document.querySelectorAll('.brand-text').forEach(el => {
-                el.style.color = bgColor;
-            });
-
-            document.querySelectorAll('.brand-bg').forEach(el => {
-                el.style.backgroundColor = bgColor;
-            });
-
-            document.querySelectorAll('.brand-text-invert').forEach(el => {
-                el.style.color = '#0a0a0a';
-            });
-        }
-
-        async function downloadAllSlidesAsZip() {
-            const btn = document.getElementById('downloadBtn');
-            const originalText = btn.innerHTML;
-
-            btn.innerHTML = "Generazione massima qualità...";
-            btn.disabled = true;
-
-            const zip = new JSZip();
-            const slides = document.querySelectorAll('.slide');
-
-            try {
-                if (document.fonts && document.fonts.ready) {
-                    await document.fonts.ready;
-                }
-
-                for (let i = 0; i < slides.length; i++) {
-                    slides[i].scrollIntoView({
-                        behavior: 'instant',
-                        block: 'center',
-                        inline: 'center'
-                    });
-
-                    await new Promise(resolve => setTimeout(resolve, 450));
-
-                    const canvas = await html2canvas(slides[i], {
-                        scale: 4,
-                        useCORS: true,
-                        allowTaint: false,
-                        backgroundColor: '#276f8f',
-                        logging: false,
-                        imageTimeout: 0,
-                        removeContainer: true,
-                        foreignObjectRendering: false,
-                        windowWidth: 1920,
-                        windowHeight: 2400
-                    });
-
-                    const blob = await new Promise(resolve => {
-                        canvas.toBlob(resolve, 'image/png');
-                    });
-
-                    zip.file(`slide-${i + 1}.png`, blob);
-                }
-
-                const content = await zip.generateAsync({ type: 'blob' });
-                saveAs(content, 'davidedileo-carousel-HQ.zip');
-
-            } catch (error) {
-                console.error(error);
-                alert("Errore esportazione. Se usi immagini esterne, prova a caricarle dal tuo computer invece che da URL.");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-
-                if (slides.length > 0) {
-                    slides[0].scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        }
-    </script>
+      } catch (error) {
+        console.error(error);
+        alert("Errore esportazione. Se usi immagini da URL esterni, caricale dal tuo computer.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
