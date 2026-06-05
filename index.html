@@ -86,20 +86,18 @@
   }
 
   /*
-    GERARCHIA COVER DEFINITIVA
+    GERARCHIA COVER STABILE ANCHE IN EXPORT
 
     1. cover-card
     2. cover-logo IMPULSE
-    3. cover-photo
+    3. heroImage assoluta
     4. cover-grad
     5. cover-ann
     6. cover-title
 
-    Risultato:
-    - La testa passa sopra IMPULSE.
-    - Il gradiente nero passa sopra la foto.
-    - Annotazioni e frecce restano sopra foto e gradiente.
-    - Titolo principale resta sopra tutto il blocco visuale.
+    Nota tecnica:
+    l'immagine non è più dentro un wrapper con overflow.
+    Questo evita differenze tra anteprima browser ed export html2canvas.
   */
 
   .cover-card {
@@ -133,25 +131,19 @@
     white-space: nowrap;
   }
 
-  .cover-photo {
-    position: absolute;
-    left: 18px;
-    right: 18px;
-    top: 112px;
-    bottom: 0;
-    z-index: 3;
-    pointer-events: none;
-    overflow: visible;
-    border-radius: 22px 22px 0 0;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
   #heroImage {
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    z-index: 5;
+    transform: translateX(-50%);
     display: block;
-    height: auto;
     width: 92%;
+    height: auto;
+    pointer-events: none;
+    image-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
   }
 
   .cover-grad {
@@ -161,14 +153,14 @@
     top: 0;
     bottom: 0;
     pointer-events: none;
-    z-index: 4;
+    z-index: 6;
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
 
   .cover-ann {
     position: absolute;
-    z-index: 6;
+    z-index: 8;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -193,7 +185,7 @@
     left: 18px;
     right: 18px;
     bottom: 26px;
-    z-index: 7;
+    z-index: 9;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -687,7 +679,8 @@
     if (heroImg) {
       heroImg.style.width = scale + '%';
       heroImg.style.height = 'auto';
-      heroImg.style.marginBottom = yPos + 'px';
+      heroImg.style.bottom = yPos + 'px';
+      heroImg.style.marginBottom = '0';
     }
   }
 
@@ -786,9 +779,7 @@
 
         <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
 
-        <div class="cover-photo" id="heroWrap">
-          <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; margin-bottom:${yPos}px;">
-        </div>
+        <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; bottom:${yPos}px;">
 
         <div id="coverGrad" class="cover-grad"></div>
 
