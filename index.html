@@ -18,9 +18,7 @@
 <style>
   @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   body {
     font-family: 'Hanken Grotesk', sans-serif;
@@ -44,25 +42,18 @@
     height: 100%;
   }
 
-  .carousel-track::-webkit-scrollbar {
-    height: 14px;
-  }
-
+  .carousel-track::-webkit-scrollbar { height: 14px; }
   .carousel-track::-webkit-scrollbar-track {
     background: #1a1a1a;
     margin: 0 40px;
     border-radius: 8px;
   }
-
   .carousel-track::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 8px;
     border: 4px solid #1a1a1a;
   }
-
-  .carousel-track::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+  .carousel-track::-webkit-scrollbar-thumb:hover { background: #555; }
 
   .slide {
     width: 380px;
@@ -167,9 +158,7 @@
     height: 90px;
   }
 
-  .cover-ann:active {
-    cursor: grabbing;
-  }
+  .cover-ann:active { cursor: grabbing; }
 
   .cover-ann span {
     font-weight: 700;
@@ -311,8 +300,23 @@
     white-space: pre-line;
   }
 
-  input[type="range"] {
-    accent-color: #266e8d;
+  input[type="range"] { accent-color: #266e8d; }
+
+  .export-preview-card {
+    width: 380px;
+    min-height: 475px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: #111827;
+    border: 1px solid #374151;
+    padding: 14px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+  }
+
+  .export-preview-card img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
   }
 </style>
 </head>
@@ -397,7 +401,7 @@
 
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
         <label class="block text-sm font-medium mb-2 text-gray-300">3 · Annotazioni cover</label>
-        <p class="text-[10px] text-gray-400 mb-3">Trascina le etichette direttamente sulla foto.</p>
+        <p class="text-[10px] text-gray-400 mb-3">Trascina le etichette sulla preview HTML. Poi premi “Aggiorna preview export”.</p>
 
         <label class="text-xs font-bold text-gray-300 mb-2 block">Colore testo &amp; frecce</label>
         <div class="flex gap-2 items-center">
@@ -424,7 +428,9 @@
         <textarea id="scriptInput" rows="7" class="w-full bg-gray-900 text-green-400 border border-gray-700 rounded p-2 text-[11px] font-mono"></textarea>
       </div>
 
-      <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">Genera anteprima</button>
+      <button onclick="generateFromScript()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">Genera anteprima HTML</button>
+
+      <button onclick="renderExportPreview()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg">Aggiorna preview export</button>
     </div>
 
     <div class="mt-4 pt-4 border-t border-gray-800">
@@ -435,6 +441,7 @@
   <div class="flex-1 flex flex-col h-full min-w-0 relative">
     <div class="px-8 pt-7 pb-0 flex-shrink-0">
       <h1 class="text-2xl font-bold text-white">Anteprima</h1>
+      <p class="text-xs text-gray-500 mt-1">A sinistra: HTML modificabile. A destra: preview reale generata con lo stesso motore dell’export.</p>
     </div>
 
     <div class="flex-1 overflow-hidden w-full relative">
@@ -853,7 +860,13 @@
         </div>
       </div>`;
 
-    track.innerHTML = html;
+    const exportPreviewHtml = `
+      <div class="export-preview-card" id="exportPreviewCard">
+        <div class="text-xs text-gray-400 mb-2">Preview export reale</div>
+        <div id="exportPreviewStatus" class="text-xs text-gray-500">Premi “Aggiorna preview export”.</div>
+      </div>`;
+
+    track.innerHTML = html + exportPreviewHtml;
 
     applyColors();
     updateImageLive();
@@ -881,6 +894,58 @@
     });
   }
 
+  async function waitForStableRender() {
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  async function renderExportPreview() {
+    const previewCard = document.getElementById('exportPreviewCard');
+    const status = document.getElementById('exportPreviewStatus');
+    const cover = document.querySelector('.slide-cover');
+    const bgColor = document.getElementById('bgColor').value;
+
+    if (!previewCard || !cover) return;
+
+    previewCard.innerHTML = `
+      <div class="text-xs text-gray-400 mb-2">Preview export reale</div>
+      <div class="text-xs text-blue-400">Rendering in corso…</div>
+    `;
+
+    try {
+      await waitForStableRender();
+
+      const canvas = await html2canvas(cover, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: bgColor,
+        logging: false,
+        imageTimeout: 0,
+        removeContainer: true,
+        foreignObjectRendering: false
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+
+      previewCard.innerHTML = `
+        <div class="text-xs text-gray-400 mb-2">Preview export reale</div>
+        <img src="${dataUrl}" alt="preview export reale">
+        <p class="text-[10px] text-gray-500 mt-2">Questa preview usa lo stesso motore dell’export ZIP.</p>
+      `;
+    } catch (error) {
+      console.error(error);
+      previewCard.innerHTML = `
+        <div class="text-xs text-gray-400 mb-2">Preview export reale</div>
+        <div class="text-xs text-red-400">Errore nella generazione della preview export.</div>
+      `;
+    }
+  }
+
   async function downloadAllSlidesAsZip() {
     const btn = document.getElementById('downloadBtn');
     const originalText = btn.innerHTML;
@@ -889,16 +954,11 @@
     btn.disabled = true;
 
     const zip = new JSZip();
-    const slides = document.querySelectorAll('.slide');
+    const slides = Array.from(document.querySelectorAll('.slide'));
     const bgColor = document.getElementById('bgColor').value;
 
     try {
-      if (document.fonts && document.fonts.ready) {
-        await document.fonts.ready;
-      }
-
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-      await new Promise(r => setTimeout(r, 800));
+      await waitForStableRender();
 
       for (let i = 0; i < slides.length; i++) {
         const canvas = await html2canvas(slides[i], {
