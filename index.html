@@ -4,10 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Davide Di Leo · Carousel Maker</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -15,7 +18,9 @@
 <style>
   @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
   body {
     font-family: 'Hanken Grotesk', sans-serif;
@@ -39,7 +44,9 @@
     height: 100%;
   }
 
-  .carousel-track::-webkit-scrollbar { height: 14px; }
+  .carousel-track::-webkit-scrollbar {
+    height: 14px;
+  }
 
   .carousel-track::-webkit-scrollbar-track {
     background: #1a1a1a;
@@ -53,7 +60,9 @@
     border: 4px solid #1a1a1a;
   }
 
-  .carousel-track::-webkit-scrollbar-thumb:hover { background: #555; }
+  .carousel-track::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 
   .slide {
     width: 380px;
@@ -76,6 +85,23 @@
     padding: 0;
   }
 
+  /*
+    GERARCHIA COVER DEFINITIVA
+
+    1. cover-card
+    2. cover-logo IMPULSE
+    3. cover-photo
+    4. cover-grad
+    5. cover-ann
+    6. cover-title
+
+    Risultato:
+    - La testa passa sopra IMPULSE.
+    - Il gradiente nero passa sopra la foto.
+    - Annotazioni e frecce restano sopra foto e gradiente.
+    - Titolo principale resta sopra tutto il blocco visuale.
+  */
+
   .cover-card {
     position: absolute;
     top: 134px;
@@ -90,13 +116,30 @@
     background-repeat: no-repeat;
   }
 
+  .cover-logo {
+    position: absolute;
+    top: 22px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #0a0a0a;
+    font-size: 4.4rem;
+    line-height: 1;
+    letter-spacing: -3px;
+    white-space: nowrap;
+  }
+
   .cover-photo {
     position: absolute;
     left: 18px;
     right: 18px;
     top: 112px;
     bottom: 0;
-    z-index: 2;
+    z-index: 3;
     pointer-events: none;
     overflow: visible;
     border-radius: 22px 22px 0 0;
@@ -118,14 +161,14 @@
     top: 0;
     bottom: 0;
     pointer-events: none;
-    z-index: 3;
+    z-index: 4;
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
 
   .cover-ann {
     position: absolute;
-    z-index: 4;
+    z-index: 6;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -133,7 +176,9 @@
     user-select: none;
   }
 
-  .cover-ann:active { cursor: grabbing; }
+  .cover-ann:active {
+    cursor: grabbing;
+  }
 
   .cover-ann span {
     font-weight: 700;
@@ -148,28 +193,11 @@
     left: 18px;
     right: 18px;
     bottom: 26px;
-    z-index: 6;
+    z-index: 7;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .cover-logo {
-    position: absolute;
-    top: 22px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 10;
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: #0a0a0a;
-    font-size: 4.4rem;
-    line-height: 1;
-    letter-spacing: -3px;
-    white-space: nowrap;
   }
 
   .title-text {
@@ -286,7 +314,9 @@
     white-space: pre-line;
   }
 
-  input[type="range"] { accent-color: #266e8d; }
+  input[type="range"] {
+    accent-color: #266e8d;
+  }
 </style>
 </head>
 
@@ -297,6 +327,7 @@
     <p class="text-[11px] text-gray-500 mb-5">Incolla lo script JSON, carica la foto, esporta in PNG.</p>
 
     <div class="space-y-4 flex-1">
+
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-300">Colore Brand</label>
         <div class="flex items-center gap-3">
@@ -319,17 +350,23 @@
             <span>Anteprima file</span>
             <span id="imgPreviewMeta" class="text-gray-500"></span>
           </div>
+
           <div class="rounded-md border border-gray-700 overflow-hidden" style="background-image: linear-gradient(45deg,#374151 25%,transparent 25%),linear-gradient(-45deg,#374151 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#374151 75%),linear-gradient(-45deg,transparent 75%,#374151 75%); background-size:14px 14px; background-position:0 0,0 7px,7px -7px,-7px 0;">
             <img id="imgPreview" class="w-full h-28 object-contain" alt="preview" />
           </div>
+
           <p id="imgWarn" class="text-[10px] text-amber-400 mt-1 hidden">Sembra avere lo sfondo pieno: per il look 3D serve un PNG scontornato con sfondo trasparente.</p>
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-700">
-          <label class="text-xs font-bold text-gray-300 flex justify-between">Dimensione <span id="scaleVal" class="text-blue-400">92%</span></label>
+          <label class="text-xs font-bold text-gray-300 flex justify-between">
+            Dimensione <span id="scaleVal" class="text-blue-400">92%</span>
+          </label>
           <input type="range" id="imageScale" min="55" max="125" value="92" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
 
-          <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Posizione verticale <span id="yVal" class="text-blue-400">-10px</span></label>
+          <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
+            Posizione verticale <span id="yVal" class="text-blue-400">-10px</span>
+          </label>
           <input type="range" id="imageY" min="-80" max="40" value="-10" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
         </div>
       </div>
@@ -337,13 +374,19 @@
       <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
         <label class="block text-sm font-medium mb-2 text-gray-300">2 · Gradiente Cover</label>
 
-        <label class="text-xs font-bold text-gray-300 flex justify-between">Altezza gradiente <span id="gradientStartVal" class="text-blue-400">58%</span></label>
+        <label class="text-xs font-bold text-gray-300 flex justify-between">
+          Altezza gradiente <span id="gradientStartVal" class="text-blue-400">58%</span>
+        </label>
         <input type="range" id="gradientStart" min="35" max="95" value="58" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
 
-        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Intensità <span id="gradientIntensityVal" class="text-blue-400">78%</span></label>
+        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
+          Intensità <span id="gradientIntensityVal" class="text-blue-400">78%</span>
+        </label>
         <input type="range" id="gradientIntensity" min="20" max="100" value="78" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
 
-        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">Nero pieno <span id="blackBaseVal" class="text-blue-400">38%</span></label>
+        <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
+          Nero pieno <span id="blackBaseVal" class="text-blue-400">38%</span>
+        </label>
         <input type="range" id="blackBase" min="20" max="85" value="38" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateGradientLive()" />
       </div>
 
@@ -388,6 +431,7 @@
     <div class="px-8 pt-7 pb-0 flex-shrink-0">
       <h1 class="text-2xl font-bold text-white">Anteprima</h1>
     </div>
+
     <div class="flex-1 overflow-hidden w-full relative">
       <div class="carousel-track" id="carouselTrack"></div>
     </div>
@@ -395,14 +439,24 @@
 
 <script>
   let annColor = '#0a0a0a';
-  let annPositions = { left: { x: 8, y: 150 }, right: { x: 260, y: 166 } };
+  let annPositions = {
+    left: { x: 8, y: 150 },
+    right: { x: 260, y: 166 }
+  };
 
   function setAnnColor(color) {
     annColor = color;
+
     const picker = document.getElementById('annColorPicker');
-    if (picker) picker.value = (color.length === 7 && color[0] === '#') ? color : '#0a0a0a';
+    if (picker) {
+      picker.value = (color.length === 7 && color[0] === '#') ? color : '#0a0a0a';
+    }
+
     const hex = document.getElementById('annColorHex');
-    if (hex) hex.textContent = color;
+    if (hex) {
+      hex.textContent = color;
+    }
+
     applyAnnStyle();
   }
 
@@ -410,8 +464,14 @@
     ['annLeft', 'annRight'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.querySelectorAll('span').forEach(s => s.style.color = annColor);
-      el.querySelectorAll('svg').forEach(s => s.setAttribute('stroke', annColor));
+
+      el.querySelectorAll('span').forEach(s => {
+        s.style.color = annColor;
+      });
+
+      el.querySelectorAll('svg').forEach(s => {
+        s.setAttribute('stroke', annColor);
+      });
     });
   }
 
@@ -430,9 +490,11 @@
         const onMove = (e) => {
           const x = Math.max(0, Math.min(e.clientX - startX, slide.offsetWidth - el.offsetWidth));
           const y = Math.max(0, Math.min(e.clientY - startY, slide.offsetHeight - el.offsetHeight));
+
           el.style.left = x + 'px';
           el.style.top = y + 'px';
           el.style.right = 'auto';
+
           annPositions[key] = { x, y };
         };
 
@@ -448,7 +510,11 @@
   }
 
   function resetAnnPositions() {
-    annPositions = { left: { x: 8, y: 150 }, right: { x: 260, y: 166 } };
+    annPositions = {
+      left: { x: 8, y: 150 },
+      right: { x: 260, y: 166 }
+    };
+
     generateFromScript();
   }
 
@@ -461,12 +527,30 @@
       "subtitle": "IL PLAYBOOK DI MICHAEL BAUM"
     },
     "slides": [
-      { "title": "1. Un evento può cambiare una traiettoria.", "text": "Michael Baum studiava a Drexel quando Steve Jobs arrivò nel campus per la partnership Apple. Quell'esposizione al personal computing lo spinse verso il software. Vide prima degli altri dove stava andando il mercato." },
-      { "title": "2. Il primo pattern: problemi complessi.", "text": "Baum non partì da prodotti carini. Partì da problemi difficili: dati, finanza, sistemi, caos operativo. Una delle sue prime startup analizzava trend di mercato e fu acquisita da Reuters." },
-      { "title": "3. Splunk nasce da una frustrazione enorme.", "text": "Le aziende generavano montagne di log, errori e alert. Nessuno riusciva a cercarli e usarli velocemente. Splunk trasformò quel caos in visibilità operativa." },
-      { "title": "4. La vera scala arriva dove c'è budget.", "text": "Splunk diventò rilevante quando dati, cybersecurity e osservabilità diventarono priorità da boardroom. Quando il problema costa milioni in downtime e rischio, il software diventa infrastruttura." },
-      { "title": "5. L'asset continua anche quando esci.", "text": "Baum lasciò il ruolo operativo anni prima dell'acquisizione Cisco. Ma l'azienda continuò a crescere: mercato, tecnologia e posizione strategica. È la differenza tra vendere lavoro e costruire equity." },
-      { "title": "6. La lezione per ogni founder.", "text": "Cerca il punto in cui un cambiamento tecnologico incontra un problema costoso e ricorrente. Poi costruisci un sistema che diventa sempre più difficile da sostituire." }
+      {
+        "title": "1. Un evento può cambiare una traiettoria.",
+        "text": "Michael Baum studiava a Drexel quando Steve Jobs arrivò nel campus per la partnership Apple. Quell'esposizione al personal computing lo spinse verso il software. Vide prima degli altri dove stava andando il mercato."
+      },
+      {
+        "title": "2. Il primo pattern: problemi complessi.",
+        "text": "Baum non partì da prodotti carini. Partì da problemi difficili: dati, finanza, sistemi, caos operativo. Una delle sue prime startup analizzava trend di mercato e fu acquisita da Reuters."
+      },
+      {
+        "title": "3. Splunk nasce da una frustrazione enorme.",
+        "text": "Le aziende generavano montagne di log, errori e alert. Nessuno riusciva a cercarli e usarli velocemente. Splunk trasformò quel caos in visibilità operativa."
+      },
+      {
+        "title": "4. La vera scala arriva dove c'è budget.",
+        "text": "Splunk diventò rilevante quando dati, cybersecurity e osservabilità diventarono priorità da boardroom. Quando il problema costa milioni in downtime e rischio, il software diventa infrastruttura."
+      },
+      {
+        "title": "5. L'asset continua anche quando esci.",
+        "text": "Baum lasciò il ruolo operativo anni prima dell'acquisizione Cisco. Ma l'azienda continuò a crescere: mercato, tecnologia e posizione strategica. È la differenza tra vendere lavoro e costruire equity."
+      },
+      {
+        "title": "6. La lezione per ogni founder.",
+        "text": "Cerca il punto in cui un cambiamento tecnologico incontra un problema costoso e ricorrente. Poi costruisci un sistema che diventa sempre più difficile da sostituire."
+      }
     ],
     "cta": {
       "topText": "Vuoi capire se il tuo business sta costruendo valore reale?",
@@ -507,11 +591,13 @@
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = function(event) {
       uploadedImageBase64 = event.target.result;
       showImagePreview(event.target.result, file);
       generateFromScript();
     };
+
     reader.readAsDataURL(file);
   });
 
@@ -533,6 +619,7 @@
 
   function escapeHtml(value) {
     if (value === undefined || value === null) return '';
+
     return String(value)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -547,6 +634,7 @@
 
   function formatCoverTitle(value) {
     if (!value) return '';
+
     return escapeHtml(value)
       .replace(/\n/g, '<br>')
       .replace(/\[BRAND\](.*?)\[\/BRAND\]/g, '<span class="brand-text">$1</span>');
@@ -554,6 +642,7 @@
 
   function cleanSlideTitle(title) {
     if (!title) return '';
+
     return String(title)
       .replace(/^\s*#?\d+\s*[\.\)\-:]\s*/g, '')
       .replace(/^\s*slide\s*\d+\s*[\.\)\-:]\s*/gi, '')
@@ -574,6 +663,7 @@
 
   function applyCtaPreset() {
     const data = parseScriptInput();
+
     if (!data) {
       alert("Errore nel JSON. Controlla virgole, virgolette e parentesi.");
       return;
@@ -581,6 +671,7 @@
 
     data.cta = ctaPresets[document.getElementById('ctaPreset').value];
     document.getElementById('scriptInput').value = JSON.stringify(data, null, 2);
+
     generateFromScript();
   }
 
@@ -592,6 +683,7 @@
     document.getElementById('yVal').innerText = yPos + 'px';
 
     const heroImg = document.getElementById('heroImage');
+
     if (heroImg) {
       heroImg.style.width = scale + '%';
       heroImg.style.height = 'auto';
@@ -602,6 +694,7 @@
   function svgVGrad(stops) {
     const s = stops.map(x => `<stop offset='${x.o}' stop-color='${x.c}'${x.op != null ? ` stop-opacity='${x.op}'` : ''}/>`).join('');
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='240' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>${s}</linearGradient></defs><rect width='4' height='240' fill='url(#g)'/></svg>`;
+
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
 
@@ -615,6 +708,7 @@
     document.getElementById('blackBaseVal').innerText = blackBase + '%';
 
     const card = document.querySelector('.cover-card');
+
     if (card) {
       card.style.backgroundImage = svgVGrad([
         { o: 0, c: '#d6e8e4' },
@@ -624,6 +718,7 @@
     }
 
     const coverGrad = document.getElementById('coverGrad');
+
     if (coverGrad) {
       const k = gradientIntensity / 100;
       const fadeTop = Math.max(0, 1 - gradientStart / 100);
@@ -635,15 +730,30 @@
       ];
 
       const N = 6;
+
       for (let i = 1; i <= N; i++) {
         const t = i / N;
         const o = fadeTop + (solidTop - fadeTop) * t;
         const op = k * Math.pow(t, 1.5);
-        stops.push({ o: +o.toFixed(4), c: '#0a0a0a', op: +op.toFixed(4) });
+
+        stops.push({
+          o: +o.toFixed(4),
+          c: '#0a0a0a',
+          op: +op.toFixed(4)
+        });
       }
 
-      stops.push({ o: Math.min(0.9999, +solidTop.toFixed(4)), c: '#0a0a0a', op: +k.toFixed(4) });
-      stops.push({ o: 1, c: '#0a0a0a', op: +k.toFixed(4) });
+      stops.push({
+        o: Math.min(0.9999, +solidTop.toFixed(4)),
+        c: '#0a0a0a',
+        op: +k.toFixed(4)
+      });
+
+      stops.push({
+        o: 1,
+        c: '#0a0a0a',
+        op: +k.toFixed(4)
+      });
 
       coverGrad.style.backgroundImage = svgVGrad(stops);
     }
@@ -674,6 +784,8 @@
       <div class="slide slide-cover brand-bg">
         <div class="cover-card"></div>
 
+        <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
+
         <div class="cover-photo" id="heroWrap">
           <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; margin-bottom:${yPos}px;">
         </div>
@@ -683,13 +795,15 @@
         <div id="annLeft" class="cover-ann" style="top:${annPositions.left.y}px; left:${annPositions.left.x}px;">
           <span style="transform:rotate(-6deg);">${formatMultiline(data.cover.leftAnnotation)}</span>
           <svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="margin-top:6px; margin-left:14px; transform:rotate(12deg);">
-            <path d="M 5 5 Q 15 20 35 30" /><path d="M 22 32 L 35 30 L 30 18" />
+            <path d="M 5 5 Q 15 20 35 30" />
+            <path d="M 22 32 L 35 30 L 30 18" />
           </svg>
         </div>
 
         <div id="annRight" class="cover-ann" style="top:${annPositions.right.y}px; left:${annPositions.right.x}px;">
           <svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px; margin-right:14px; transform:rotate(-12deg);">
-            <path d="M 35 5 Q 25 20 5 30" /><path d="M 18 32 L 5 30 L 10 18" />
+            <path d="M 35 5 Q 25 20 5 30" />
+            <path d="M 18 32 L 5 30 L 10 18" />
           </svg>
           <span style="transform:rotate(6deg);">${formatMultiline(data.cover.rightAnnotation)}</span>
         </div>
@@ -701,8 +815,6 @@
             <path d="M 0 10 Q 25 12 46 10 M 35 2 L 48 10 L 35 18" />
           </svg>
         </div>
-
-        <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
       </div>`;
 
     data.slides.forEach((slide, index) => {
@@ -746,6 +858,7 @@
 
   function applyColors() {
     const bgColor = document.getElementById('bgColor').value;
+
     document.getElementById('hexValue').textContent = bgColor;
 
     document.querySelectorAll('.brand-text').forEach(el => {
