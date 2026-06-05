@@ -90,6 +90,27 @@
     background-repeat: no-repeat;
   }
 
+  .cover-photo {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 112px;
+    bottom: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: visible;
+    border-radius: 22px 22px 0 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  #heroImage {
+    display: block;
+    height: auto;
+    width: 92%;
+  }
+
   .cover-grad {
     position: absolute;
     left: 18px;
@@ -97,14 +118,14 @@
     top: 0;
     bottom: 0;
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
 
   .cover-ann {
     position: absolute;
-    z-index: 3;
+    z-index: 4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,27 +141,6 @@
     line-height: 1;
     text-align: center;
     font-family: 'Open Sauce One', 'Hanken Grotesk', sans-serif;
-  }
-
-  .cover-photo {
-    position: absolute;
-    left: 18px;
-    right: 18px;
-    top: 112px;
-    bottom: 0;
-    z-index: 4;
-    pointer-events: none;
-    overflow: visible;
-    border-radius: 22px 22px 0 0;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  #heroImage {
-    display: block;
-    height: auto;
-    width: 92%;
   }
 
   .cover-title {
@@ -674,6 +674,10 @@
       <div class="slide slide-cover brand-bg">
         <div class="cover-card"></div>
 
+        <div class="cover-photo" id="heroWrap">
+          <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; margin-bottom:${yPos}px;">
+        </div>
+
         <div id="coverGrad" class="cover-grad"></div>
 
         <div id="annLeft" class="cover-ann" style="top:${annPositions.left.y}px; left:${annPositions.left.x}px;">
@@ -688,10 +692,6 @@
             <path d="M 35 5 Q 25 20 5 30" /><path d="M 18 32 L 5 30 L 10 18" />
           </svg>
           <span style="transform:rotate(6deg);">${formatMultiline(data.cover.rightAnnotation)}</span>
-        </div>
-
-        <div class="cover-photo" id="heroWrap">
-          <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; margin-bottom:${yPos}px;">
         </div>
 
         <div class="cover-title">
