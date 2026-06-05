@@ -112,23 +112,23 @@
 
   .photo-clip {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 18px;
+    right: 18px;
     top: 0;
-    bottom: -40px;
+    bottom: -120px;
     z-index: 5;
     pointer-events: none;
-    overflow: visible;
+    overflow: hidden;
   }
 
   #heroImage {
     position: absolute;
     left: 50%;
-    bottom: -10px;
+    bottom: 0;
     transform: translateX(-50%);
     display: block;
     width: 92%;
-    max-width: calc(100% - 36px);
+    max-width: none;
     height: auto;
     pointer-events: none;
     image-rendering: auto;
@@ -376,12 +376,12 @@
           <label class="text-xs font-bold text-gray-300 flex justify-between">
             Dimensione <span id="scaleVal" class="text-blue-400">92%</span>
           </label>
-          <input type="range" id="imageScale" min="55" max="125" value="92" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
+          <input type="range" id="imageScale" min="55" max="140" value="92" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
 
           <label class="text-xs font-bold text-gray-300 flex justify-between mt-3">
             Posizione verticale <span id="yVal" class="text-blue-400">-10px</span>
           </label>
-          <input type="range" id="imageY" min="-80" max="40" value="-10" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
+          <input type="range" id="imageY" min="-120" max="60" value="-10" class="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer mt-2" oninput="updateImageLive()" />
         </div>
       </div>
 
@@ -706,6 +706,7 @@
       heroImg.style.height = 'auto';
       heroImg.style.bottom = yPos + 'px';
       heroImg.style.marginBottom = '0';
+      heroImg.style.maxWidth = 'none';
     }
   }
 
@@ -785,7 +786,7 @@
         <h1 class="cover-logo">${escapeHtml(data.cover.magazineTitle)}</h1>
 
         <div class="photo-clip">
-          <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; bottom:${yPos}px;">
+          <img id="heroImage" src="${fgImage}" decoding="sync" style="width:${scale}%; bottom:${yPos}px; max-width:none;">
         </div>
 
         <div id="coverGrad" class="cover-grad"></div>
