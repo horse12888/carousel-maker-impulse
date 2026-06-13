@@ -104,9 +104,9 @@
     font-weight: 900;
     text-transform: uppercase;
     color: #0a0a0a;
-    font-size: 4.4rem;
+    font-size: 4.9rem;        /* era 4.4rem - ingrandito per riempire piu spazio blu */
     line-height: 1;
-    letter-spacing: -3px;
+    letter-spacing: -4px;     /* era -3px - compensa la larghezza per non tagliare I/E */
     white-space: nowrap;
   }
 
@@ -904,7 +904,76 @@
     });
   }
 
+  // ============================================================
+  // FIX EXPORT — allinea html2canvas all'anteprima HTML.
+  // Legge le dimensioni/posizioni REALI calcolate dal browser
+  // sulla cover visibile e le "incolla" sul clone che html2canvas
+  // sta per disegnare. Cosi non dipende da numeri fissi: se cambi
+  // il CSS, i valori si ricalcolano da soli.
+  // ============================================================
+  function pinCoverDimensionsForExport(clonedDoc) {
+    const liveCover  = document.querySelector('.slide-cover');
+    const cloneCover = clonedDoc.querySelector('.slide-cover');
+    if (!liveCover || !cloneCover) return;
+
+    const coverRect = liveCover.getBoundingClientRect();
+
+    // Elementi posizionati con inset (left/right/top/bottom) che
+    // html2canvas tende a mis-misurare. Fissiamo width/height in px
+    // e convertiamo l'inset in top/left espliciti.
+    const selectors = ['.cover-card', '.photo-clip', '#coverGrad', '.cover-logo'];
+
+    selectors.forEach(sel => {
+      const liveEl  = liveCover.querySelector(sel);
+      const cloneEl = cloneCover.querySelector(sel);
+      if (!liveEl || !cloneEl) return;
+
+      const r = liveEl.getBoundingClientRect();
+
+      cloneEl.style.width  = liveEl.offsetWidth + 'px';
+      cloneEl.style.height = liveEl.offsetHeight + 'px';
+      cloneEl.style.left   = (r.left - coverRect.left) + 'px';
+      cloneEl.style.top    = (r.top  - coverRect.top)  + 'px';
+      cloneEl.style.right  = 'auto';
+      cloneEl.style.bottom = 'auto';
+    });
+
+    // Immagine hero: la sua larghezza e in % della .photo-clip.
+    // La fissiamo in px assoluti per togliere ogni ambiguita sul
+    // calcolo della percentuale, e annulliamo il transform di
+    // centratura sostituendolo con un left esplicito.
+    const liveHero  = liveCover.querySelector('#heroImage');
+    const cloneHero = cloneCover.querySelector('#heroImage');
+    const liveClip  = liveCover.querySelector('.photo-clip');
+    if (liveHero && cloneHero && liveClip) {
+      const heroRect = liveHero.getBoundingClientRect();
+      const clipRect = liveClip.getBoundingClientRect();
+
+      cloneHero.style.width     = liveHero.offsetWidth + 'px';
+      cloneHero.style.height    = liveHero.offsetHeight + 'px';
+      cloneHero.style.maxWidth  = 'none';
+      cloneHero.style.left      = (heroRect.left - clipRect.left) + 'px';
+      cloneHero.style.top       = (heroRect.top  - clipRect.top)  + 'px';
+      cloneHero.style.bottom    = 'auto';
+      cloneHero.style.transform = 'none';
+    }
+  }
+
   async function waitForStableRender() {
+    // Carico esplicitamente i font usati nella cover prima della
+    // cattura: se html2canvas scatta prima che siano pronti, usa
+    // un fallback con metriche diverse e il testo si sposta.
+    if (document.fonts && document.fonts.load) {
+      try {
+        await Promise.all([
+          document.fonts.load('900 4.4rem "Hanken Grotesk"'),
+          document.fonts.load('900 2rem "Hanken Grotesk"'),
+          document.fonts.load('700 1rem "Open Sauce One"'),
+          document.fonts.load('700 1rem "Caveat"')
+        ]);
+      } catch (e) { /* fallback ai font di sistema, non bloccante */ }
+    }
+
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
     }
@@ -938,7 +1007,8 @@
         logging: false,
         imageTimeout: 0,
         removeContainer: true,
-        foreignObjectRendering: false
+        foreignObjectRendering: false,
+        onclone: pinCoverDimensionsForExport
       });
 
       const dataUrl = canvas.toDataURL('image/png');
@@ -980,7 +1050,8 @@
           logging: false,
           imageTimeout: 0,
           removeContainer: true,
-          foreignObjectRendering: false
+          foreignObjectRendering: false,
+          onclone: pinCoverDimensionsForExport
         });
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
