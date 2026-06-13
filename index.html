@@ -104,9 +104,9 @@
     font-weight: 900;
     text-transform: uppercase;
     color: #0a0a0a;
-    font-size: 4.9rem;        /* era 4.4rem - ingrandito per riempire piu spazio blu */
+    font-size: 4.4rem;        /* fallback: la dimensione reale la calcola fitCoverLogo() */
     line-height: 1;
-    letter-spacing: -4px;     /* era -3px - compensa la larghezza per non tagliare I/E */
+    letter-spacing: 0;        /* era -4px: html2canvas non onora lo spacing negativo -> divergenza preview/export */
     white-space: nowrap;
   }
 
@@ -883,6 +883,13 @@
     updateGradientLive();
     initAnnDrag();
     applyAnnStyle();
+
+    // Auto-fit del logo: subito (best-effort) e di nuovo a font pronti
+    const liveCover = document.querySelector('.slide-cover');
+    fitCoverLogo(liveCover);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => fitCoverLogo(document.querySelector('.slide-cover')));
+    }
   }
 
   function applyColors() {
@@ -902,6 +909,39 @@
     document.querySelectorAll('.cover-logo').forEach(el => {
       el.style.color = logoColor;
     });
+  }
+
+  // ============================================================
+  // AUTO-FIT LOGO — calcola il font-size piu grande che fa stare
+  // "IMPULSE" entro una % della larghezza, senza tagli. Misura la
+  // larghezza reale del testo con uno span fuori schermo (font gia
+  // caricato) e imposta un font-size esplicito in px sul logo live.
+  // Il clone dell'export eredita questo px -> preview = export.
+  // ============================================================
+  function fitCoverLogo(coverEl) {
+    if (!coverEl) return;
+    const logo = coverEl.querySelector('.cover-logo');
+    if (!logo) return;
+
+    const slideW  = coverEl.offsetWidth || 380;
+    const targetW = slideW * 0.92;   // riempi il 92% della larghezza (8% di margine)
+    const MAX_PX  = 86;              // tetto verticale: non toccare la card sotto
+
+    const cs = getComputedStyle(logo);
+
+    const probe = document.createElement('span');
+    probe.textContent = logo.textContent || 'IMPULSE';
+    probe.style.cssText =
+      'position:absolute;left:-99999px;top:-99999px;white-space:nowrap;' +
+      'text-transform:uppercase;letter-spacing:0;font-size:100px;' +
+      'font-family:' + cs.fontFamily + ';font-weight:' + (cs.fontWeight || 900) + ';';
+    document.body.appendChild(probe);
+    const textW = probe.offsetWidth || 1;
+    document.body.removeChild(probe);
+
+    let size = 100 * (targetW / textW);
+    if (size > MAX_PX) size = MAX_PX;
+    logo.style.fontSize = size.toFixed(1) + 'px';
   }
 
   // ============================================================
@@ -977,6 +1017,9 @@
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
     }
+
+    // A font caricati, ridimensiono il logo sul live: il clone lo eredita
+    fitCoverLogo(document.querySelector('.slide-cover'));
 
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     await new Promise(r => setTimeout(r, 800));
